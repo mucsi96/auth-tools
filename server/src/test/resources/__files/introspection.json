@@ -1,0 +1,10 @@
+{
+  "active": true,
+  "aud": ["demo-app"],
+  "client_id": "demo-app",
+  "exp": 1702407107,
+  "iat": 1702403507,
+  "scope": "openid offline_access groups profile email",
+  "sub": "8c8e7de1-f585-4eb3-8a20-0949a9f4f5cd",
+  "username": "mucsi96"
+}

@@ -1,0 +1,16 @@
+{
+  "amr": ["pwd"],
+  "aud": ["demo-app", "demo-app"],
+  "auth_time": 1702239785,
+  "azp": "demo-app",
+  "client_id": "demo-app",
+  "email": "robert.white@mockemail.com",
+  "email_verified": true,
+  "groups": ["guest"],
+  "iat": 1702239788,
+  "iss": "https://auth.x.com",
+  "name": "Robert White",
+  "preferred_username": "rob",
+  "rat": 1702239786,
+  "sub": "8c8e7de1-f585-4eb3-8a20-0949a9f4f5cd"
+}

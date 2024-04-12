@@ -1,0 +1,20 @@
+{
+  "properties": [
+    {
+      "name": "authtools.introspection-uri",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "authtools.user-info-uri",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "authtools.client-id",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "authtools.client-secret",
+      "type": "java.lang.String"
+    }
+  ]
+}

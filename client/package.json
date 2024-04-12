@@ -1,0 +1,23 @@
+{
+  "name": "@mucsi96/auth-tools",
+  "version": "1.0.0",
+  "description": "",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {},
+  "keywords": [],
+  "author": "Igor Bari <mucsi96@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.8",
+    "vite-plugin-dts": "^3.8.1"
+  },
+  "dependencies": {
+    "@mucsi96/ui-elements": "^8.0.0"
+  }
+}

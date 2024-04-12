@@ -1,0 +1,21 @@
+{
+  "name": "token_handler",
+  "version": "1.0.0",
+  "description": "Open ID Connect token handler",
+  "author": "Igor Bari",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.2",
+    "@types/node": "^20.9.4",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "oauth4webapi": "^2.4.0"
+  },
+  "type": "module"
+}
