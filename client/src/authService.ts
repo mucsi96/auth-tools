@@ -5,7 +5,9 @@ type Options = {
 };
 
 let options: Options | undefined;
-let userInfo: { sub: string; name: string; groups: string[] } | undefined;
+let userInfo:
+  | { isSignedIn: boolean; userName: string; roles: string[] }
+  | undefined;
 
 export function init(newOptions: Options) {
   options = newOptions;
@@ -23,26 +25,23 @@ export async function getUserInfo() {
     throw new Error('Failed to get user info');
   }
 
-  return await res.json();
-}
+  const responseBody = (await res.json()) as {
+    sub: string;
+    name: string;
+    groups: string[];
+  };
 
-export async function isSignedIn() {
-  const userInfo = await getUserInfo();
-  return !!userInfo.sub;
-}
+  userInfo = {
+    isSignedIn: !!responseBody.sub,
+    userName: responseBody.name,
+    roles: responseBody.groups ?? [],
+  };
 
-export async function getUserName() {
-  const userInfo = await getUserInfo();
-  return userInfo.name;
-}
-
-export async function getRoles() {
-  const userInfo = await getUserInfo();
-  return userInfo.groups ?? [];
+  return userInfo;
 }
 
 export async function hasRole(role: string) {
-  const roles = await getRoles();
+  const { roles } = await getUserInfo();
   return roles.includes(role);
 }
 

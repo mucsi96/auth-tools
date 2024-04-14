@@ -22,6 +22,7 @@
           "ms-azuretools.vscode-docker",
           "EditorConfig.EditorConfig",
           "esbenp.prettier-vscode",
+          "runem.lit-plugin",
           "vscjava.vscode-java-pack",
           "vmware.vscode-spring-boot",
           "vscjava.vscode-spring-boot-dashboard",

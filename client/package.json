@@ -7,7 +7,9 @@
   "files": [
     "dist"
   ],
-  "scripts": {},
+  "scripts": {
+    "build": "vite build"
+  },
   "keywords": [],
   "author": "Igor Bari <mucsi96@gmail.com>",
   "license": "MIT",
