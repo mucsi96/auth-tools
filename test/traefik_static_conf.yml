@@ -1,0 +1,13 @@
+api:
+  dashboard: true
+entryPoints:
+  web:
+    address: ":80"
+providers:
+  file:
+    filename: /etc/traefik/traefik.dynamic.yml
+experimental:
+  plugins:
+    rewriteHeaders:
+      modulename: "github.com/XciD/traefik-plugin-rewrite-headers"
+      version: "v0.0.4"

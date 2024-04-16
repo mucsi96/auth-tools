@@ -6,20 +6,39 @@
     <title>Authtools test</title>
   </head>
   <body>
-    <h1>Authtools test</h1>
-    <script type="module">
-      import { init } from "/dist/index.mjs";
+    <main is="bt-main">
+      <h1 is="bt-heading">Authtools test</h1>
+      <script type="module">
+        import {
+          init,
+          signin,
+          assertRole,
+          handleSigninRedirectCallback,
+        } from "/dist/index.mjs";
 
-      init({
-        redirectUri: "http://localhost:3000/callback",
-        navigateHome: () => {
-          window.location.href = "/";
-        },
-        navigateToLogin: () => {
-          window.location.href = "/login";
-        },
-      });
-    </script>
-    <section is="bt-user-info"></section>
+        init({
+          redirectUri: "http://localhost:9780/callback",
+          navigateHome: () => {
+            window.location.href = "/";
+          },
+          navigateToSignin: () => {
+            window.location.href = "/login";
+          },
+        });
+
+        switch (window.location.pathname) {
+          case "/login":
+            break;
+          case "/callback":
+            handleSigninRedirectCallback();
+            break;
+          default:
+            assertRole("admin");
+            break;
+        }
+      </script>
+      <section is="bt-user-info"></section>
+      <section is="bt-notifications"></section>
+    </main>
   </body>
 </html>

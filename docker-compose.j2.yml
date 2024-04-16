@@ -1,0 +1,27 @@
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+  authelia:
+    image: authelia/authelia
+    volumes:
+      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/authelia_configuration.rj2.yml:/config/configuration.yml"
+      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/authelia_users.rj2.yml:/config/users.yml"
+  token-handler:
+    environment:
+      CLIENT_ID: test_client_id
+      CLIENT_SECRET: test_client_secret
+      BASE_PATH: /auth
+      IDENTITY_PROVIDER_BASE_PATH: http://authelia
+    build:
+      context: ./token_handler
+      dockerfile: Dockerfile
+  proxy:
+    image: traefik
+    ports:
+      - 9780:80
+    volumes:
+      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/traefik_static_conf.yml:/etc/traefik/traefik.yml"
+      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/traefik_dynamic_conf.yml:/etc/traefik/traefik.dynamic.yml"
+

@@ -32,17 +32,12 @@
       }
     },
     "containerEnv": {
-      "WORKSPACE_ROOT": "${localWorkspaceFolder}"
+      "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
+      "CONTAINER_WORKSPACE_FOLDER": "${containerWorkspaceFolder}"
     },
     "remoteUser": "vscode",
-    "postStartCommand": {
-      "configure-git": "git config --global --add safe.directory ${containerWorkspaceFolder}",
-      "configure-docker": "sudo chown $(whoami) /var/run/docker.sock"
-    },
-    "postCreateCommand": {
-      "pip-install": "pip install -r requirements.txt",
-      "npm-install": "cd client && npm install"
-    },
+    "postCreateCommand": ".devcontainer/post-create.sh",
+    "postStartCommand": ".devcontainer/post-start.sh",
     // Required for Java dev containers
     "mounts": [
       "source=/var/run/docker.sock.raw,target=/var/run/docker.sock,type=bind"

@@ -4,10 +4,11 @@ import {
   isOAuth2Error,
   parseWwwAuthenticateChallenges,
   processAuthorizationCodeOpenIDResponse,
-  validateAuthResponse
-} from "oauth4webapi";
-import { client } from "./clientConfig.js";
-import { discover } from "./discoveryService.js";
+  validateAuthResponse,
+} from 'oauth4webapi';
+import { client } from './clientConfig.js';
+import { discover } from './discoveryService.js';
+import { getEnv } from './utils.js';
 
 export async function getToken({
   codeVerifier,
@@ -23,17 +24,21 @@ export async function getToken({
   redirectUri: string;
 }) {
   const authorizationServer = await discover();
+  console.log('callbackUrl', callbackUrl);
+  console.log('authorizationServer', authorizationServer);
+  const callbackUrlObj = new URL(callbackUrl);
+
 
   const params = validateAuthResponse(
     authorizationServer!,
     client,
-    new URL(callbackUrl),
+    callbackUrlObj,
     state!
   );
 
   if (isOAuth2Error(params)) {
-    console.log("error", params);
-    throw new Error("OAuth 2.0 redirect error");
+    console.log('error', params);
+    throw new Error('OAuth 2.0 redirect error');
   }
 
   const response = await authorizationCodeGrantRequest(
@@ -48,9 +53,9 @@ export async function getToken({
 
   if ((challenges = parseWwwAuthenticateChallenges(response))) {
     for (const challenge of challenges) {
-      console.log("challenge", challenge);
+      console.log('challenge', challenge);
     }
-    throw new Error("www-authenticate challenge");
+    throw new Error('www-authenticate challenge');
   }
 
   const tokenResponse = await processAuthorizationCodeOpenIDResponse(
@@ -61,8 +66,8 @@ export async function getToken({
   );
 
   if (isOAuth2Error(tokenResponse)) {
-    console.log("error", tokenResponse);
-    throw new Error("OAuth 2.0 response body error");
+    console.log('error', tokenResponse);
+    throw new Error('OAuth 2.0 response body error');
   }
 
   return {

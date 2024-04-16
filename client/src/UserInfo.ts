@@ -1,6 +1,6 @@
 import { customElement, htmlToString } from '@mucsi96/ui-elements';
 import { html } from 'lit';
-import { getUserInfo, signout } from './authService';
+import { getUserInfo, signin, signout } from './authService';
 
 @customElement({
   name: 'bt-user-info',
@@ -10,11 +10,26 @@ export class UserInfo extends HTMLElement {
   constructor() {
     super();
 
-    getUserInfo().then(({ userName }) => {
-      this.innerHTML = htmlToString(html`<h1 app-heading>Hello ${userName}!</h1>
-        <button app-button color="red" (click)=${() => signout()} type="button">
-          Sign out
-        </button>`);
+    getUserInfo().then((userInfo) => {
+      if ('userName' in userInfo) {
+        this.innerHTML = htmlToString(html`<h1 app-heading>
+            Hello ${userInfo.userName}!
+          </h1>
+          <button is="bt-button" color="red" type="button">Sign out</button>`);
+        this.querySelector('button')?.addEventListener('click', () =>
+          signout()
+        );
+      }
+
+      this.innerHTML = htmlToString(html`<button
+        is="bt-button"
+        color="blue"
+        type="button"
+      >
+        Sign in
+      </button>`);
+      this.querySelector('button')?.addEventListener('click', () => signin());
+      return;
     });
   }
 }

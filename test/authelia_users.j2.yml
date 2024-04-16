@@ -1,0 +1,9 @@
+users:
+  john_doe:
+    # {{ environ('TEST_PASSWORD') }}
+    password: {{ environ('TEST_PASSWORD_HASH') }}
+    displayname: John Doe
+    email: john.doe@authelia.com
+    groups:
+      - admins
+      - dev

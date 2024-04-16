@@ -3,7 +3,7 @@
   "tasks": [
     {
       "type": "shell",
-      "command": "docker-compose up --build --force-recreate --remove-orphans --pull always",
+      "command": "docker-compose --file docker-compose.rj2.yml up --build --force-recreate --remove-orphans --pull always",
       "isBackground": true,
       "label": "Docker compose up",
       "problemMatcher": []

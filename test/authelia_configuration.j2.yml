@@ -1,0 +1,45 @@
+server:
+  address: 'tcp://:80/'
+authentication_backend:
+  password_reset:
+    disable: true
+  file:
+    path: /config/users.yml
+access_control:
+  rules:
+    - domain_regex: '.*'
+      policy: one_factor
+session:
+  secret: test_session_secret
+  expiration: 1h
+  cookies:
+    - domain: authelia.ee
+      authelia_url: https://authelia.ee
+storage:
+  encryption_key: test_encryption_key123
+  local:
+    path: /config/db.sqlite3
+notifier:
+  filesystem:
+    filename: /config/notification.txt
+identity_providers:
+  oidc:
+    hmac_secret: test_hmac_secret
+    jwks:
+      - key: |
+          {{ environ('TEST_JWKS_KEY') | indent(10) }}
+    enforce_pkce: always
+    clients:
+      - client_id: test_client_id
+        client_secret: test_client_secret
+        authorization_policy: one_factor
+        audience:
+          - test_client_id
+        scopes:
+          - openid
+          - offline_access
+          - groups
+          - profile
+          - email
+        redirect_uris:
+          - http://localhost:9780/callback
