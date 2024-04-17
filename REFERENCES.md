@@ -1,0 +1,3 @@
+- [Playwright for Python](https://playwright.dev/python/docs/intro)
+- [Authelia](https://www.authelia.com/configuration/prologue/introduction/)
+- [oauth4webapi](https://github.com/panva/oauth4webapi/blob/main/docs/README.md)
