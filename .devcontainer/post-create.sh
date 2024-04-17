@@ -1,6 +1,9 @@
 #!/bin/bash
 
 pip install -r requirements.txt
+
+playwright install chromium --with-deps
+
 cd client && npm install
 
 #https://www.authelia.com/reference/guides/generating-secure-values/#generating-an-rsa-keypair

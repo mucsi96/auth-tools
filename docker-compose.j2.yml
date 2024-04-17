@@ -4,7 +4,7 @@ services:
       context: ./client
       dockerfile: Dockerfile
   authelia:
-    image: authelia/authelia
+    image: authelia/authelia:4.38.8
     volumes:
       - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/authelia_configuration.rj2.yml:/config/configuration.yml"
       - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/authelia_users.rj2.yml:/config/users.yml"
@@ -18,7 +18,7 @@ services:
       context: ./token_handler
       dockerfile: Dockerfile
   proxy:
-    image: traefik
+    image: traefik:v2.11.2
     ports:
       - 9780:80
     volumes:

@@ -12,3 +12,5 @@ dist
 .DS_Store
 
 *.rj2.yml
+__pycache__
+test-results
