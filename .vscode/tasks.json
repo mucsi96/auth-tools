@@ -3,9 +3,16 @@
   "tasks": [
     {
       "type": "shell",
-      "command": "docker-compose --file docker-compose.rj2.yml up --build --force-recreate --remove-orphans --pull always",
+      "command": "./docker-compose.sh",
       "isBackground": true,
       "label": "Docker compose up",
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "command": "docker-compose --file docker-compose.rj2.yml down",
+      "isBackground": true,
+      "label": "Docker compose down",
       "problemMatcher": []
     },
     {

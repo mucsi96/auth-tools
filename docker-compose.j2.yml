@@ -13,15 +13,21 @@ services:
       CLIENT_ID: test_client_id
       CLIENT_SECRET: test_client_secret
       BASE_PATH: /auth
-      IDENTITY_PROVIDER_BASE_PATH: http://authelia
+      IDENTITY_PROVIDER_BASE_PATH: http://authelia.auth-tools.home
     build:
       context: ./token_handler
       dockerfile: Dockerfile
+    extra_hosts:
+      - "authelia.auth-tools.home:172.16.238.10"
   proxy:
     image: traefik:v2.11.2
-    ports:
-      - 9780:80
+    networks:
+      default:
+        ipv4_address: 172.16.238.10
     volumes:
       - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/traefik_static_conf.yml:/etc/traefik/traefik.yml"
       - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/traefik_dynamic_conf.yml:/etc/traefik/traefik.dynamic.yml"
-
+networks:
+  default:
+    name: auth-tools
+    external: {{ false if environ('CI') else true }}

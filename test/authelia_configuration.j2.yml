@@ -13,8 +13,8 @@ session:
   secret: test_session_secret
   expiration: 1h
   cookies:
-    - domain: authelia.ee
-      authelia_url: https://authelia.ee
+    - domain: auth-tools.home
+      authelia_url: https://authelia.auth-tools.home
 storage:
   encryption_key: test_encryption_key123
   local:

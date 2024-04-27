@@ -1,46 +1,48 @@
 // For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.202.3/containers/python-3
 {
-    "image": "mcr.microsoft.com/vscode/devcontainers/base:bullseye",
-    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-    "features": {
-      // https://containers.dev/features
-      // https://github.com/devcontainers/features
-      "ghcr.io/devcontainers/features/python:1": {},
-      "ghcr.io/devcontainers/features/node:1": {},
-      "ghcr.io/devcontainers/features/java:1": {
-        "installMaven": true
-      },
-      "ghcr.io/robbert229/devcontainer-features/postgresql-client:1": {
-        "version": "16"
-      },
-      "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:bullseye",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {
+    // https://containers.dev/features
+    // https://github.com/devcontainers/features
+    "ghcr.io/devcontainers/features/python:1": {},
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/java:1": {
+      "installMaven": true
     },
-    "customizations": {
-      "vscode": {
-        "extensions": [
-            "ms-azuretools.vscode-docker",
-            "EditorConfig.EditorConfig",
-            "esbenp.prettier-vscode",
-            "runem.lit-plugin",
-            "vscjava.vscode-java-pack",
-            "vmware.vscode-spring-boot",
-            "vscjava.vscode-spring-boot-dashboard",
-            "vscjava.vscode-spring-initializr",
-            "GitHub.copilot",
-            "littlefoxteam.vscode-python-test-adapter"
-        ]
-      }
+    "ghcr.io/robbert229/devcontainer-features/postgresql-client:1": {
+      "version": "16"
     },
-    "containerEnv": {
-      "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
-      "CONTAINER_WORKSPACE_FOLDER": "${containerWorkspaceFolder}"
-    },
-    "remoteUser": "vscode",
-    "postCreateCommand": ".devcontainer/post-create.sh",
-    "postStartCommand": ".devcontainer/post-start.sh",
-    // Required for Java dev containers
-    "mounts": [
-      "source=/var/run/docker.sock.raw,target=/var/run/docker.sock,type=bind"
-    ]
-  }
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "EditorConfig.EditorConfig",
+        "esbenp.prettier-vscode",
+        "runem.lit-plugin",
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-spring-boot-dashboard",
+        "vscjava.vscode-spring-initializr",
+        "GitHub.copilot",
+        "littlefoxteam.vscode-python-test-adapter"
+      ]
+    }
+  },
+  "runArgs": ["--network=auth-tools"],
+  "containerEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
+    "CONTAINER_WORKSPACE_FOLDER": "${containerWorkspaceFolder}"
+  },
+  "remoteUser": "vscode",
+  "initializeCommand": "docker network create auth-tools --subnet 172.16.238.0/24 || true",
+  "postCreateCommand": ".devcontainer/post-create.sh",
+  "postStartCommand": ".devcontainer/post-start.sh",
+  // Required for Java dev containers
+  "mounts": [
+    "source=/var/run/docker.sock.raw,target=/var/run/docker.sock,type=bind"
+  ]
+}

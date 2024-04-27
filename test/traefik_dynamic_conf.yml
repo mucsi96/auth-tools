@@ -5,84 +5,32 @@ http:
         - web
       service: api@internal
       rule: HostRegexp(`dashboard.{host:[a-z0-9-.]+}`)
+    authelia:
+      entryPoints:
+        - web
+      service: authelia
+      rule: HostRegexp(`authelia.{host:[a-z0-9-.]+}`)
     client:
       entryPoints:
         - web
       service: client
       rule: PathPrefix(`/`)
-    # authelia:
-    #   entryPoints:
-    #     - web
-    #   service: authelia
-    #   rule: HostRegexp(`auth.{host:[a-z0-9-.]+}`)
     token-handler:
       entryPoints:
         - web
       service: token-handler
       rule: PathPrefix(`/auth/`)
-    # servers:
-    #   entryPoints:
-    #     - web
-    #   middlewares:
-    #     - authHeaders
-    #     - rewriteWithings
-    #     - rewriteStrava
-    #   service: server
-    #   rule: PathPrefix(`/api`)
-    # mockBackupTool:
-    #   entryPoints:
-    #     - web
-    #   service: mockBackupTool
-    #   rule: Path(`/db/last-backup-time`)
-    # mockWithings:
-    #   entryPoints:
-    #     - web
-    #   service: mockWithings
-    #   rule: PathPrefix(`/withings`)
-    # mockStrava:
-    #   entryPoints:
-    #     - web
-    #   service: mockStrava
-    #   rule: PathPrefix(`/strava`)
-    # chrome:
-    #   entryPoints:
-    #     - web
-    #   service: chrome
-    #   rule: PathPrefix(`/chrome`)
-  # middlewares:
-  #   rewriteAuthelia:
-  #     plugin:
-  #       rewriteHeaders:
-  #         rewrites:
-  #           - header: Location
-  #             regex: "^http://authelia:9091/(.+)$"
-  #             replacement: http://auth.localhost:9780/$1
   services:
     client:
       loadBalancer:
         servers:
           - url: http://client:3000
-    # authelia:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://authelia
+    authelia:
+      loadBalancer:
+        servers:
+          - url: http://authelia
     token-handler:
       loadBalancer:
         servers:
           - url: http://token-handler:8080
-    # mockBackupTool:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://mock-backup-tool:8080
-    # mockWithings:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://mock-withings:8080
-    # mockStrava:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://mock-strava:8080
-    # chrome:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://chrome:4444
+
