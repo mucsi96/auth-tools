@@ -17,7 +17,7 @@
         } from "/dist/index.mjs";
 
         init({
-          redirectUri: "http://localhost:9780/callback",
+          redirectUri: `${window.location.origin}/callback`,
           navigateHome: () => {
             window.location.href = "/";
           },

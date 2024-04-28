@@ -7,19 +7,22 @@ http:
       rule: HostRegexp(`dashboard.{host:[a-z0-9-.]+}`)
     authelia:
       entryPoints:
-        - web
+        - websecure
       service: authelia
       rule: HostRegexp(`authelia.{host:[a-z0-9-.]+}`)
+      tls: true
     client:
       entryPoints:
-        - web
+        - websecure
       service: client
       rule: PathPrefix(`/`)
+      tls: true
     token-handler:
       entryPoints:
-        - web
+        - websecure
       service: token-handler
       rule: PathPrefix(`/auth/`)
+      tls: true
   services:
     client:
       loadBalancer:

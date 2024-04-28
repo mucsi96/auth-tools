@@ -34,6 +34,7 @@
   },
   "runArgs": ["--network=auth-tools"],
   "containerEnv": {
+    "DISPLAY": "host.docker.internal:0",
     "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
     "CONTAINER_WORKSPACE_FOLDER": "${containerWorkspaceFolder}"
   },

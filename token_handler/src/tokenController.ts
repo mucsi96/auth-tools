@@ -37,10 +37,12 @@ export async function getToken(req: IncomingMessage, res: ServerResponse) {
     });
 
   if (!expiresIn) {
+    console.log("Access token already expired")
     return returnError(res, 500, "Access token already expired");
   }
 
   if (!refreshToken) {
+    console.log("Refresh token is not returned")
     return returnError(res, 500, "Refresh token is not returned");
   }
 

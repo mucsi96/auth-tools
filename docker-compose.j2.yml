@@ -13,7 +13,8 @@ services:
       CLIENT_ID: test_client_id
       CLIENT_SECRET: test_client_secret
       BASE_PATH: /auth
-      IDENTITY_PROVIDER_BASE_PATH: http://authelia.auth-tools.home
+      IDENTITY_PROVIDER_BASE_PATH: https://authelia.auth-tools.home
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
     build:
       context: ./token_handler
       dockerfile: Dockerfile

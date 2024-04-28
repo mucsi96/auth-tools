@@ -6,7 +6,6 @@ import {
 } from 'oauth4webapi';
 import { client } from './clientConfig.js';
 import { discover } from './discoveryService.js';
-import { getEnv } from './utils.js';
 
 export async function authorize({ redirectUri }: { redirectUri: string }) {
   const authorizationServer = await discover();

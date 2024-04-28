@@ -1,8 +1,12 @@
+log:
+  level: DEBUG
 api:
   dashboard: true
 entryPoints:
   web:
     address: ":80"
+  websecure:
+    address: ":443"
 providers:
   file:
     filename: /etc/traefik/traefik.dynamic.yml

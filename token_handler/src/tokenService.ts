@@ -24,8 +24,6 @@ export async function getToken({
   redirectUri: string;
 }) {
   const authorizationServer = await discover();
-  console.log('callbackUrl', callbackUrl);
-  console.log('authorizationServer', authorizationServer);
   const callbackUrlObj = new URL(callbackUrl);
 
 
@@ -69,6 +67,8 @@ export async function getToken({
     console.log('error', tokenResponse);
     throw new Error('OAuth 2.0 response body error');
   }
+
+  console.log('tokenResponse', tokenResponse);
 
   return {
     accessToken: tokenResponse.access_token,
