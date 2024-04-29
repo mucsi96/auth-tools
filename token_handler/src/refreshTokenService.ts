@@ -16,8 +16,6 @@ export async function getFreshToken({
 }) {
   const authorizationServer = await discover();
 
-  console.log("refreshTokenGrantRequest", { refreshToken })
-
   const response = await refreshTokenGrantRequest(
     authorizationServer,
     client,
