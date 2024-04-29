@@ -42,7 +42,7 @@ def test_shows_user_details_after_sign_in(page: Page):
     page.get_by_label("Password").fill(get_password())
     page.keyboard.press("Enter")
     page.get_by_role("button", name="Accept").click()
-    expect(page).to_have_title("Logine - Authelia")
+    expect(page.get_by_text("Hello John Doe!")).to_be_visible()
 
 def test_get_started_link(page: Page):
     page.goto("https://authelia.auth-tools.home")

@@ -5,5 +5,5 @@ users:
     displayname: John Doe
     email: john.doe@authelia.com
     groups:
-      - admins
+      - admin
       - dev

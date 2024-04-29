@@ -116,8 +116,6 @@ export async function handleSigninRedirectCallback() {
       throw new Error('Failed to handle signin redirect callback');
     }
 
-    await res.json();
-
     options.navigateHome();
   } catch (err) {
     document.dispatchEvent(new ErrorNotificationEvent('Authentication failed'));

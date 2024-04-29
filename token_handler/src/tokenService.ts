@@ -1,6 +1,7 @@
 import {
   WWWAuthenticateChallenge,
   authorizationCodeGrantRequest,
+  getValidatedIdTokenClaims,
   isOAuth2Error,
   parseWwwAuthenticateChallenges,
   processAuthorizationCodeOpenIDResponse,
@@ -8,7 +9,6 @@ import {
 } from 'oauth4webapi';
 import { client } from './clientConfig.js';
 import { discover } from './discoveryService.js';
-import { getEnv } from './utils.js';
 
 export async function getToken({
   codeVerifier,
@@ -68,7 +68,10 @@ export async function getToken({
     throw new Error('OAuth 2.0 response body error');
   }
 
+  const { sub } = getValidatedIdTokenClaims(tokenResponse) ?? {};
+
   return {
+    subject: sub!,
     accessToken: tokenResponse.access_token,
     expiresIn: tokenResponse.expires_in,
     refreshToken: tokenResponse.refresh_token,
