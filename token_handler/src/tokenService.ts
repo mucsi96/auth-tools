@@ -68,8 +68,6 @@ export async function getToken({
     throw new Error('OAuth 2.0 response body error');
   }
 
-  console.log('tokenResponse', tokenResponse);
-
   return {
     accessToken: tokenResponse.access_token,
     expiresIn: tokenResponse.expires_in,

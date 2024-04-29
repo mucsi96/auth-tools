@@ -13,6 +13,13 @@ def browser_context_args(browser_context_args):
         "ignore_https_errors": True,
     }
 
+@fixture(scope="session")
+def browser_type_launch_args(browser_type_launch_args):
+    return {
+        **browser_type_launch_args,
+        "devtools": True,
+    }
+
 def test_redirects_to_authelia_on_sign_in_click(page: Page):
     page.goto("https://auth-tools.home")
     page.get_by_role("button", name="Sign in").click()

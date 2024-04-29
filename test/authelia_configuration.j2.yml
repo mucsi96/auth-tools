@@ -36,9 +36,10 @@ identity_providers:
     clients:
       - client_id: test_client_id
         client_secret: test_client_secret
+        grant_types:
+          - refresh_token
+          - authorization_code
         authorization_policy: one_factor
-        audience:
-          - test_client_id
         scopes:
           - openid
           - offline_access
