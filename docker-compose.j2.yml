@@ -19,7 +19,7 @@ services:
     extra_hosts:
       - "authelia.auth-tools.home:172.16.238.10"
     volumes:
-      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/token_handler_configuration.json:/config/clients.json"
+      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/token_handler_configuration.yml:/config/clients.yml"
   proxy:
     image: traefik:v2.11.2
     networks:

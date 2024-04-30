@@ -1,7 +1,0 @@
-[
-  {
-    "client_id": "test_client_id",
-    "client_secret": "test_client_secret",
-    "redirect_uris": ["https://auth-tools.home/callback"]
-  }
-]
