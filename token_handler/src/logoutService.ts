@@ -1,14 +1,16 @@
 import {
+  Client,
   processRevocationResponse,
   revocationRequest
 } from "oauth4webapi";
-import { client } from "./clientConfig.js";
 import { discover } from "./discoveryService.js";
 
 export async function logout({
+  client,
   accessToken,
   refreshToken,
 }: {
+  client: Client;
   accessToken?: string;
   refreshToken?: string;
 }) {
@@ -24,7 +26,6 @@ export async function logout({
     );
 
     if (error) {
-      console.log("error", error);
       throw new Error("OAuth 2.0 response body error");
     }
   }
@@ -35,7 +36,6 @@ export async function logout({
     );
 
     if (error) {
-      console.log("error", error);
       throw new Error("OAuth 2.0 response body error");
     }
   }

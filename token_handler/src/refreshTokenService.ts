@@ -1,4 +1,5 @@
 import {
+  Client,
   WWWAuthenticateChallenge,
   getValidatedIdTokenClaims,
   isOAuth2Error,
@@ -6,12 +7,13 @@ import {
   processRefreshTokenResponse,
   refreshTokenGrantRequest,
 } from "oauth4webapi";
-import { client } from "./clientConfig.js";
 import { discover } from "./discoveryService.js";
 
 export async function getFreshToken({
+  client,
   refreshToken,
 }: {
+  client: Client;
   refreshToken: string;
 }) {
   const authorizationServer = await discover();

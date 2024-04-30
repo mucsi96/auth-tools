@@ -1,15 +1,17 @@
 import * as logoutService from "./logoutService.js";
 
-import { IncomingMessage, ServerResponse } from "http";
+import { IncomingMessage, ServerResponse, get } from "http";
 import { generateCookieString, parseCookieString } from "./utils.js";
+import { Client } from "oauth4webapi";
 
-export async function logout(req: IncomingMessage, res: ServerResponse) {
+export async function logout(client: Client, req: IncomingMessage, res: ServerResponse) {
   const { accessToken, refreshToken } = parseCookieString<{
     accessToken: string;
     refreshToken: string;
   }>(req.headers.cookie);
 
   await logoutService.logout({
+    client,
     accessToken,
     refreshToken,
   });

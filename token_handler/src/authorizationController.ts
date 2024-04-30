@@ -1,17 +1,24 @@
 import * as authorizeService from './authorizationService.js';
 
 import { IncomingMessage, ServerResponse } from 'http';
-import { generateCookieString, getBody, returnError } from './utils.js';
+import { Client } from 'oauth4webapi';
+import { generateCookieString, getBody } from './utils.js';
+import assert from 'assert';
 
-export async function authorize(req: IncomingMessage, res: ServerResponse) {
-  const { redirectUri } = await getBody<{ redirectUri?: string }>(req);
+export async function authorize(
+  client: Client,
+  req: IncomingMessage,
+  res: ServerResponse
+) {
+  const { redirectUri } = await getBody<{
+    redirectUri?: string;
+  }>(req);
 
-  if (!redirectUri) {
-    return returnError(res, 400, 'Missing redirectUri');
-  }
+  assert(redirectUri, 'Missing redirectUri');
 
   const { authorizationUrl, codeVerifier, nonce, state } =
     await authorizeService.authorize({
+      client,
       redirectUri,
     });
 

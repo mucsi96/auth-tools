@@ -1,13 +1,19 @@
 import {
+  Client,
   calculatePKCECodeChallenge,
   generateRandomCodeVerifier,
   generateRandomNonce,
   generateRandomState,
 } from 'oauth4webapi';
-import { client } from './clientConfig.js';
 import { discover } from './discoveryService.js';
 
-export async function authorize({ redirectUri }: { redirectUri: string }) {
+export async function authorize({
+  client,
+  redirectUri,
+}: {
+  client: Client;
+  redirectUri: string;
+}) {
   const authorizationServer = await discover();
 
   if (!authorizationServer.authorization_endpoint) {

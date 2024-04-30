@@ -31,6 +31,7 @@ export function returnError(
   statusCode: number,
   message: string
 ) {
+  console.error(message);
   res.writeHead(statusCode, { "Content-Type": "application/json" });
   res.end(JSON.stringify({ message }));
 }

@@ -1,17 +1,18 @@
 import * as tokenService from './tokenService.js';
 
+import assert from 'assert';
 import { IncomingMessage, ServerResponse } from 'http';
-import {
-  generateCookieString,
-  getBody,
-  parseCookieString,
-  returnError,
-} from './utils.js';
+import { Client } from 'oauth4webapi';
+import { generateCookieString, getBody, parseCookieString } from './utils.js';
 
-export async function getToken(req: IncomingMessage, res: ServerResponse) {
-  const { callbackUrl, redirectUri } = await getBody<{
+export async function getToken(
+  client: Client,
+  req: IncomingMessage,
+  res: ServerResponse
+) {
+  const { redirectUri, callbackUrl } = await getBody<{
+    redirectUri: string;
     callbackUrl?: string;
-    redirectUri?: string;
   }>(req);
   const { codeVerifier, nonce, state } = parseCookieString<{
     codeVerifier: string;
@@ -19,16 +20,12 @@ export async function getToken(req: IncomingMessage, res: ServerResponse) {
     nonce: string;
   }>(req.headers.cookie);
 
-  if (!callbackUrl) {
-    return returnError(res, 400, 'Missing callbackUrl');
-  }
-
-  if (!redirectUri) {
-    return returnError(res, 400, 'Missing redirectUri');
-  }
+  assert(redirectUri, 'Missing redirectUri');
+  assert(callbackUrl, 'Missing callbackUrl');
 
   const { accessToken, expiresIn, refreshToken, subject } =
     await tokenService.getToken({
+      client,
       codeVerifier,
       state,
       nonce,
@@ -36,15 +33,8 @@ export async function getToken(req: IncomingMessage, res: ServerResponse) {
       redirectUri,
     });
 
-  if (!expiresIn) {
-    console.log('Access token already expired');
-    return returnError(res, 500, 'Access token already expired');
-  }
-
-  if (!refreshToken) {
-    console.log('Refresh token is not returned');
-    return returnError(res, 500, 'Refresh token is not returned');
-  }
+  assert(expiresIn, 'Access token already expired');
+  assert(refreshToken, 'Refresh token is not returned');
 
   res.writeHead(200, {
     'Content-Type': 'application/json',

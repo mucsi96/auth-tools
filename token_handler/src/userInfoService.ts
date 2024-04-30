@@ -1,16 +1,18 @@
 import {
+  Client,
   WWWAuthenticateChallenge,
   parseWwwAuthenticateChallenges,
   processUserInfoResponse,
   userInfoRequest
 } from "oauth4webapi";
-import { client } from "./clientConfig.js";
 import { discover } from "./discoveryService.js";
 
 export async function getUserInfo({
+  client,
   subject,
   accessToken,
 }: {
+  client: Client;
   subject: string;
   accessToken: string;
 }) {

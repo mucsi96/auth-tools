@@ -1,4 +1,5 @@
 import {
+  Client,
   WWWAuthenticateChallenge,
   authorizationCodeGrantRequest,
   getValidatedIdTokenClaims,
@@ -7,16 +8,17 @@ import {
   processAuthorizationCodeOpenIDResponse,
   validateAuthResponse,
 } from 'oauth4webapi';
-import { client } from './clientConfig.js';
 import { discover } from './discoveryService.js';
 
 export async function getToken({
+  client,
   codeVerifier,
   state,
   nonce,
   callbackUrl,
   redirectUri,
 }: {
+  client: Client;
   codeVerifier: string;
   state: string;
   nonce: string;
@@ -25,7 +27,6 @@ export async function getToken({
 }) {
   const authorizationServer = await discover();
   const callbackUrlObj = new URL(callbackUrl);
-
 
   const params = validateAuthResponse(
     authorizationServer!,

@@ -1,14 +1,15 @@
-import * as userInfoService from "./userInfoService.js";
-import * as refreshTokenService from "./refreshTokenService.js";
+import * as userInfoService from './userInfoService.js';
 
-import { IncomingMessage, ServerResponse } from "http";
-import {
-  generateCookieString,
-  parseCookieString,
-  returnError,
-} from "./utils.js";
+import { IncomingMessage, ServerResponse } from 'http';
+import { parseCookieString, returnError } from './utils.js';
+import { Client } from 'oauth4webapi';
+import assert from 'assert';
 
-export async function getUserInfo(req: IncomingMessage, res: ServerResponse) {
+export async function getUserInfo(
+  client: Client,
+  req: IncomingMessage,
+  res: ServerResponse
+) {
   const { accessToken, subject } = parseCookieString<{
     accessToken: string;
     subject: string;
@@ -31,10 +32,18 @@ export async function getUserInfo(req: IncomingMessage, res: ServerResponse) {
   //   return returnError(res, 500, "Refresh token is not returned");
   // }
 
-  const userInfo = await userInfoService.getUserInfo({ subject, accessToken });
+  if (!accessToken || !subject) {
+    return returnError(res, 401, '');
+  }
+
+  const userInfo = await userInfoService.getUserInfo({
+    client,
+    subject,
+    accessToken,
+  });
 
   res.writeHead(200, {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     // "Set-Cookie": generateCookieString([
     //   {
     //     name: "accessToken",
