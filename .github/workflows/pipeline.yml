@@ -13,8 +13,6 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      LOCAL_WORKSPACE_FOLDER: .
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

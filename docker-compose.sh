@@ -19,6 +19,10 @@ fi
 export TEST_PASSWORD=$(cat /tmp/test_password)
 export TEST_PASSWORD_HASH=$(cat /tmp/test_password_hash)
 
+if [[ -n "$CI" ]]; then
+  export LOCAL_WORKSPACE_FOLDER: .
+fi
+
 jinja2 docker-compose.j2.yml > docker-compose.rj2.yml
 jinja2 test/authelia_configuration.j2.yml > test/authelia_configuration.rj2.yml
 jinja2 test/authelia_users.j2.yml > test/authelia_users.rj2.yml
