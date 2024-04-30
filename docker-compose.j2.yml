@@ -30,12 +30,5 @@ services:
       - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/traefik_dynamic_conf.yml:/etc/traefik/traefik.dynamic.yml"
 networks:
   default:
-    {% if environ('CI') %}
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.16.238.0/24
-    {% else %}
     name: auth-tools
     external: true
-    {% endif %}

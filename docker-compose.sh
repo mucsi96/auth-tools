@@ -23,5 +23,10 @@ jinja2 docker-compose.j2.yml > docker-compose.rj2.yml
 jinja2 test/authelia_configuration.j2.yml > test/authelia_configuration.rj2.yml
 jinja2 test/authelia_users.j2.yml > test/authelia_users.rj2.yml
 
+if [ -n "$CI"]; then
+  docker network create auth-tools --subnet 172.16.238.0/24
+  cat docker-compose.rj2.yml
+fi
+
 docker-compose --file docker-compose.rj2.yml up --detach --build --force-recreate --wait --remove-orphans --pull always
 
