@@ -12,7 +12,10 @@ let userInfo:
   | undefined;
 
 export function init(newOptions: Options) {
-  options = newOptions;
+  options = {
+    ...newOptions,
+    redirectUri: location.origin + newOptions.redirectUri,
+  };
   userInfo = undefined;
 }
 
@@ -80,7 +83,9 @@ export async function signin() {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ redirectUri: options.redirectUri }),
+      body: JSON.stringify({
+        redirectUri: options.redirectUri,
+      }),
     });
 
     if (!res.ok) {

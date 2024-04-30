@@ -17,7 +17,8 @@ def browser_context_args(browser_context_args):
 def browser_type_launch_args(browser_type_launch_args):
     return {
         **browser_type_launch_args,
-        "devtools": True,
+        # "devtools": True,
+        # "headless": False,
     }
 
 def test_redirects_to_authelia_on_sign_in_click(page: Page):
@@ -44,9 +45,25 @@ def test_shows_user_details_after_sign_in(page: Page):
     page.get_by_role("button", name="Accept").click()
     expect(page.get_by_text("Hello John Doe!")).to_be_visible()
 
-def test_get_started_link(page: Page):
-    page.goto("https://authelia.auth-tools.home")
+def test_shows_sign_in_error_on_deny(page: Page):
+    page.goto("https://auth-tools.home")
+    page.get_by_role("button", name="Sign in").click()
+    print(page.url)
     page.get_by_label("Username").fill("john_doe")
+    page.keyboard.press("Tab")
     page.get_by_label("Password").fill(get_password())
-    page.get_by_role("button", name="SIGN IN").click()
-    expect(page.get_by_role("heading", name="Installation")).to_be_visible()
+    page.keyboard.press("Enter")
+    page.get_by_role("button", name="Deny").click()
+    expect(page.get_by_role("status").filter(has_text="Authentication failed")).to_be_visible()
+
+def test_sign_out(page: Page):
+    page.goto("https://auth-tools.home")
+    page.get_by_role("button", name="Sign in").click()
+    print(page.url)
+    page.get_by_label("Username").fill("john_doe")
+    page.keyboard.press("Tab")
+    page.get_by_label("Password").fill(get_password())
+    page.keyboard.press("Enter")
+    page.get_by_role("button", name="Accept").click()
+    page.get_by_role("button", name="Sign out").click()
+    expect(page.get_by_role("button", name="Sign in")).to_be_visible()
