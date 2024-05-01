@@ -19,7 +19,7 @@ fi
 export TEST_PASSWORD=$(cat /tmp/test_password)
 export TEST_PASSWORD_HASH=$(cat /tmp/test_password_hash)
 
-if [[ -n "$CI" ]]; then
+if [[ -z "$LOCAL_WORKSPACE_FOLDER" ]]; then
   export LOCAL_WORKSPACE_FOLDER='.'
 fi
 
@@ -30,7 +30,6 @@ jinja2 test/authelia_users.j2.yml > test/authelia_users.rj2.yml
 if [[ -n "$CI" ]]; then
   docker network create auth-tools --subnet 172.16.238.0/24
   cat docker-compose.rj2.yml
-  docker-compose --file docker-compose.rj2.yml up --detach --wait
 else
   docker-compose --file docker-compose.rj2.yml up --detach --build --force-recreate --wait --remove-orphans --pull always
 fi
