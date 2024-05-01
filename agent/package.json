@@ -1,5 +1,5 @@
 {
-  "name": "token_handler",
+  "name": "agent",
   "version": "1.0.0",
   "description": "Open ID Connect token handler",
   "author": "Igor Bari",

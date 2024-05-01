@@ -1,2 +1,3 @@
 - Add server
-- Run tests on CI
+- Improve design
+- Add publishing

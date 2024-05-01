@@ -3,31 +3,54 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.client.entrypoints=websecure"
+      - "traefik.http.routers.client.rule=Host(`auth-tools.home`)"
+      - "traefik.http.routers.client.tls=true"
+      - "traefik.http.services.client.loadbalancer.server.port=3000"
   authelia:
     image: authelia/authelia:4.38.8
     volumes:
       - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/authelia_configuration.rj2.yml:/config/configuration.yml"
       - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/authelia_users.rj2.yml:/config/users.yml"
-  token-handler:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.authelia.entrypoints=websecure"
+      - "traefik.http.routers.authelia.rule=Host(`authelia.auth-tools.home`)"
+      - "traefik.http.routers.authelia.tls=true"
+      - "traefik.http.services.authelia.loadbalancer.server.port=80"
+  agent:
     environment:
       BASE_PATH: /auth
       IDENTITY_PROVIDER_BASE_PATH: https://authelia.auth-tools.home
       NODE_TLS_REJECT_UNAUTHORIZED: 0
     build:
-      context: ./token_handler
+      context: ./agent
       dockerfile: Dockerfile
     extra_hosts:
       - "authelia.auth-tools.home:172.16.238.10"
     volumes:
-      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/token_handler_configuration.yml:/config/clients.yml"
+      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/agent_configuration.yml:/config/clients.yml"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.agent.entrypoints=websecure"
+      - "traefik.http.routers.agent.rule=Host(`auth-tools.home`) && PathPrefix(`/auth/`)"
+      - "traefik.http.routers.agent.tls=true"
+      - "traefik.http.services.agent.loadbalancer.server.port=8080"
   proxy:
-    image: traefik:v2.11.2
+    image: traefik:v3.0.0
     networks:
       default:
         ipv4_address: 172.16.238.10
     volumes:
-      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/traefik_static_conf.yml:/etc/traefik/traefik.yml"
-      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/traefik_dynamic_conf.yml:/etc/traefik/traefik.dynamic.yml"
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/traefik.yml:/etc/traefik/traefik.yml"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=web"
+      - "traefik.http.routers.traefik.rule=Host(`dashboard.auth-tools.home`)"
+      - "traefik.http.routers.traefik.service=api@internal"
 networks:
   default:
     name: auth-tools

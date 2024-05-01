@@ -8,5 +8,5 @@ entryPoints:
   websecure:
     address: ":443"
 providers:
-  file:
-    filename: /etc/traefik/traefik.dynamic.yml
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
