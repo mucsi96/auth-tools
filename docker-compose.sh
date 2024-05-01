@@ -20,7 +20,7 @@ export TEST_PASSWORD=$(cat /tmp/test_password)
 export TEST_PASSWORD_HASH=$(cat /tmp/test_password_hash)
 
 if [[ -n "$CI" ]]; then
-  export LOCAL_WORKSPACE_FOLDER: .
+  export LOCAL_WORKSPACE_FOLDER='.'
 fi
 
 jinja2 docker-compose.j2.yml > docker-compose.rj2.yml
