@@ -18,7 +18,7 @@ def browser_type_launch_args(browser_type_launch_args):
     return {
         **browser_type_launch_args,
         # "devtools": True,
-        "headless": False,
+        # "headless": False,
     }
 
 def test_redirects_to_authelia_on_sign_in_click(page: Page):
