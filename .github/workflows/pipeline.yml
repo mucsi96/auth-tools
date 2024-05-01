@@ -22,5 +22,5 @@ jobs:
       - run: pip install -r requirements.txt
       - run: playwright install chromium --with-deps
       - run: ./docker-compose.sh
-      - run: docker-compose --file docker-compose.rj2.yml up --detach
+      # - run: docker-compose --file docker-compose.rj2.yml up --detach
       - run: pytest
