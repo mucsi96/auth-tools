@@ -43,6 +43,9 @@ services:
     networks:
       default:
         ipv4_address: 172.16.238.10
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "{{ environ('LOCAL_WORKSPACE_FOLDER') }}/test/traefik.yml:/etc/traefik/traefik.yml"
