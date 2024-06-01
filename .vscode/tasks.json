@@ -3,6 +3,34 @@
   "tasks": [
     {
       "type": "shell",
+      "command": "bash",
+      "label": "Install dependencies",
+      "args": ["scripts/install_dependencies.sh"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "command": "npm",
+      "args": ["start"],
+      "isBackground": true,
+      "label": "Start agent",
+      "options": { "cwd": "${workspaceFolder}/agent" },
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build"],
+      "isBackground": true,
+      "label": "Build agent",
+      "options": { "cwd": "${workspaceFolder}/agent" },
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
       "command": "./docker-compose.sh",
       "isBackground": true,
       "label": "Docker compose up",

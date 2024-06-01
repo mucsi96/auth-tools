@@ -1,9 +1,9 @@
-import { IncomingMessage, ServerResponse } from "http";
+import { IncomingMessage, ServerResponse } from 'http';
 
 export function getEnv(name: string): string {
   const value = process.env[name];
 
-  if (!value) {
+  if (value === undefined) {
     throw new Error(`${name} is missing.`);
   }
 
@@ -13,11 +13,11 @@ export function getEnv(name: string): string {
 export function getBody<T>(req: IncomingMessage): Promise<T> {
   return new Promise((resolve, reject) => {
     try {
-      let body = "";
-      req.on("data", (chunk: Buffer) => {
+      let body = '';
+      req.on('data', (chunk: Buffer) => {
         body += chunk.toString();
       });
-      req.on("end", () => {
+      req.on('end', () => {
         resolve(body ? JSON.parse(body) : {});
       });
     } catch (error) {
@@ -32,7 +32,7 @@ export function returnError(
   message: string
 ) {
   console.error(message);
-  res.writeHead(statusCode, { "Content-Type": "application/json" });
+  res.writeHead(statusCode, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify({ message }));
 }
 
@@ -42,16 +42,17 @@ export function generateCookieString(
   return cookies
     .map(({ name, value, maxAge }) => {
       const cookieOptions = [
-        "HttpOnly",
-        "SameSite=Lax",
-        "Secure",
-        "Path=/",
+        'HttpOnly',
+        'SameSite=Lax',
+        'Secure',
+        'Path=/',
+        `Domain=${getEnv('COOKIE_DOMAIN')}`,
         `Max-Age=${maxAge}`,
       ];
 
       return `${name}=${
-        value ? encodeURIComponent(value) : ""
-      }; ${cookieOptions.join("; ")}`;
+        value ? encodeURIComponent(value) : ''
+      }; ${cookieOptions.join('; ')}`;
     })
     .filter(Boolean);
 }

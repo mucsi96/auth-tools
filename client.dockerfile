@@ -1,9 +1,10 @@
 FROM node:20-alpine
 WORKDIR /app/client
 RUN npm install -g serve
-COPY package.json package-lock.json ./
+
+COPY client_lib/package.json client_lib/package-lock.json ./
 RUN npm ci
-COPY . ./
+COPY client_lib ./
 RUN yarn build
 
 COPY test/index.html ./

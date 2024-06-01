@@ -35,7 +35,7 @@ export async function authorize({
   authorizationUrl.searchParams.set('response_type', 'code');
   authorizationUrl.searchParams.set(
     'scope',
-    'openid offline_access groups profile email'
+    'openid profile email offline_access'
   );
   authorizationUrl.searchParams.set('state', state);
   authorizationUrl.searchParams.set('nonce', nonce);

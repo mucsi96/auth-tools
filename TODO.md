@@ -1,3 +1,5 @@
 - Add server
 - Improve design
 - Add publishing
+- Hoist dockerfiles to root
+- Add admin and guest users + tests

@@ -1,8 +1,7 @@
 services:
   client:
     build:
-      context: ./client
-      dockerfile: Dockerfile
+      dockerfile: client.dockerfile
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.client.entrypoints=websecure"
@@ -23,7 +22,7 @@ services:
   agent:
     environment:
       BASE_PATH: /auth
-      IDENTITY_PROVIDER_BASE_PATH: https://authelia.auth-tools.home
+      ISSUER: https://authelia.auth-tools.home
       NODE_TLS_REJECT_UNAUTHORIZED: 0
     build:
       context: ./agent

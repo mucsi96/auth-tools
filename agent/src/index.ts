@@ -1,12 +1,12 @@
 import http, { IncomingMessage, ServerResponse } from 'http';
-import { authorize } from './authorizationController.js';
+import { authorize, serverAuthorize } from './authorizationController.js';
 import { getEnv, returnError } from './utils.js';
 import { getToken } from './tokenController.js';
 import { getUserInfo } from './userInfoController.js';
 import { logout } from './logoutController.js';
+import { handleCallback } from './callbackController.js';
 import { getClientConfig } from './clientConfig.js';
 import { AssertionError } from 'assert';
-import { assert } from 'console';
 
 const PORT = process.env.PORT || 8080;
 const BASE_PATH = getEnv('BASE_PATH');
@@ -20,10 +20,9 @@ const server = http.createServer(
         return;
       }
 
-      const referer = req.headers.referer;
-      console.log(req.method, req.url, referer);
+      console.log(req.method, req.url);
 
-      const client = getClientConfig(referer);
+      const client = getClientConfig();
 
       if (req.url === BASE_PATH + '/user-info' && req.method === 'GET') {
         return await getUserInfo(client, req, res);
@@ -39,6 +38,15 @@ const server = http.createServer(
 
       if (req.url === BASE_PATH + '/logout' && req.method === 'POST') {
         return await logout(client, req, res);
+      }
+
+      // These routes are for classic web authorization code flow
+      if (req.url === BASE_PATH + '/authorize' && req.method === 'GET') {
+        return await serverAuthorize(client, req, res);
+      }
+
+      if (req.url?.startsWith(BASE_PATH + '/callback') && req.method === 'GET') {
+        return await handleCallback(client, req, res);
       }
 
       return returnError(res, 404, 'Route not found');

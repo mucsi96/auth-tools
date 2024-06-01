@@ -1,27 +1,9 @@
-import assert from 'assert';
-import { readFileSync } from 'fs';
 import { Client } from 'oauth4webapi';
-import yaml from 'js-yaml';
+import { getEnv } from './utils.js';
 
-const clients = yaml.load(readFileSync('/config/clients.yml', 'utf8')) as {
-  client_id: string;
-  client_secret: string;
-  redirect_uris: string[];
-}[];
-
-export function getClientConfig(referer?: string): Client {
-  assert(referer, 'referer not provided');
-
-  const client = clients.find((client) =>
-    client.redirect_uris.some((uri) => uri.includes(new URL(referer).origin))
-  );
-
-  if (!client) {
-    throw new Error(`Client not found for referer: ${referer}`);
-  }
-
+export function getClientConfig(): Client {
   return {
-    ...client,
-    token_endpoint_auth_method: 'client_secret_basic',
+    client_id: getEnv('CLIENT_ID'),
+    client_secret: getEnv('CLIENT_SECRET'),
   };
 }

@@ -7,13 +7,14 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "dotenv -e .env node dist/index.js"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.9.4",
-    "typescript": "^5.3.2"
+    "typescript": "^5.3.2",
+    "dotenv-cli": "^7.4.2"
   },
   "dependencies": {
     "js-yaml": "^4.1.0",

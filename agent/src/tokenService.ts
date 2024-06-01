@@ -9,30 +9,29 @@ import {
   validateAuthResponse,
 } from 'oauth4webapi';
 import { discover } from './discoveryService.js';
+import { getPendingAuthorization } from './pendingAuthorizations.js';
 
 export async function getToken({
   client,
-  codeVerifier,
-  state,
-  nonce,
   callbackUrl,
   redirectUri,
 }: {
   client: Client;
-  codeVerifier: string;
-  state: string;
-  nonce: string;
   callbackUrl: string;
   redirectUri: string;
 }) {
   const authorizationServer = await discover();
   const callbackUrlObj = new URL(callbackUrl);
 
+  const { state, codeVerifier, nonce } = getPendingAuthorization(
+    callbackUrlObj.searchParams.get('state')
+  );
+
   const params = validateAuthResponse(
     authorizationServer!,
     client,
     callbackUrlObj,
-    state!
+    state
   );
 
   if (isOAuth2Error(params)) {
@@ -45,7 +44,7 @@ export async function getToken({
     client,
     params,
     redirectUri,
-    codeVerifier!
+    codeVerifier
   );
 
   let challenges: WWWAuthenticateChallenge[] | undefined;
@@ -61,13 +60,15 @@ export async function getToken({
     authorizationServer!,
     client,
     response,
-    nonce!
+    nonce
   );
 
   if (isOAuth2Error(tokenResponse)) {
     console.log('error', tokenResponse);
     throw new Error('OAuth 2.0 response body error');
   }
+
+  console.log('tokenResponse', tokenResponse);
 
   const { sub } = getValidatedIdTokenClaims(tokenResponse) ?? {};
 

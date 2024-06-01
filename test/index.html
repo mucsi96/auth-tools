@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authtools test</title>
+  </head>
+  <style>
+    body {
+      background-color: var(--bt-background-color);
+      color: var(--bt-text-color);
+      font-family: var(--bt-font-family);
+      margin: 0;
+    }
+  </style>
+  <script type="module">
+    import {
+      init,
+      signin,
+      assertRole,
+      handleSigninRedirectCallback,
+    } from "/dist/index.mjs";
+
+    init({
+      redirectUri: "/callback",
+      navigateHome: () => {
+        window.location.href = "/";
+      },
+      navigateToSignin: () => {
+        window.location.href = "/login";
+      },
+    });
+
+    switch (window.location.pathname) {
+      case "/login":
+        break;
+      case "/callback":
+        handleSigninRedirectCallback();
+        break;
+      default:
+        assertRole("admin");
+        break;
+    }
+  </script>
+  <body>
+    <header is="bt-header" title="Authtools test">
+      <section is="bt-user-info"></section>
+    </header>
+    <main is="bt-main">
+      <section is="bt-notifications"></section>
+    </main>
+  </body>
+</html>
