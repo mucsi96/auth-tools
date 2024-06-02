@@ -16,6 +16,7 @@ pyenv activate $project
 pip install -r requirements.txt
 
 (cd agent && npm install)
+(cd client_lib && npm install)
 
 identity_provider_client_id=$(az keyvault secret show --vault-name p02 --name identity-provider-client-id --query value -o tsv)
 identity_provider_client_secret=$(az keyvault secret show --vault-name p02 --name identity-provider-client-secret --query value -o tsv)

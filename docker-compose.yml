@@ -41,11 +41,12 @@ services:
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - "./test/traefik.yml:/etc/traefik/traefik.yml"
+      - ./test/traefik.yml:/etc/traefik/traefik.yml
+      - ./test/traefik.dyn.yml:/etc/traefik/traefik.dyn.yml
+      - /etc/certs:/etc/certs
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.rule=Host(`dashboard.auth-tools.home`)"
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.routers.traefik.tls=true"
-

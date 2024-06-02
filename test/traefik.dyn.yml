@@ -1,0 +1,4 @@
+tls:
+  certificates:
+    - certFile: /etc/certs/home.crt
+      keyFile: /etc/certs/home.key

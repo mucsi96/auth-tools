@@ -43,11 +43,19 @@
     }
   </script>
   <body>
-    <header is="bt-header" title="Authtools test">
-      <section is="bt-user-info"></section>
+    <header bt>
+      <nav>
+        <a href="/" bt-logo>Authtools test</a>
+        <ul>
+          <li><a href="/" bt-active>Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+        <section bt-user-info></section>
+      </nav>
     </header>
-    <main is="bt-main">
-      <section is="bt-notifications"></section>
+    <main bt>
+      <section bt-notifications></section>
     </main>
   </body>
 </html>

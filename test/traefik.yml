@@ -15,3 +15,5 @@ entryPoints:
 providers:
   docker:
     endpoint: "unix:///var/run/docker.sock"
+  file:
+    filename: /etc/traefik/traefik.dyn.yml
