@@ -8,6 +8,7 @@ import {
 import { discover } from './discoveryService.js';
 import { addPendingAuthorization } from './pendingAuthorizations.js';
 import { jwtVerify, createRemoteJWKSet } from 'jose';
+import { getEnv } from './utils.js';
 
 export async function isAuthorized({
   accessToken,
@@ -21,12 +22,15 @@ export async function isAuthorized({
       throw new Error('No JWKS URI discovered');
     }
 
-    await jwtVerify(
-      accessToken,
-      createRemoteJWKSet(new URL(authorizationServer.jwks_uri))
-    );
+    const jwks = createRemoteJWKSet(new URL(authorizationServer.jwks_uri));
+
+    await jwtVerify(accessToken, jwks, {
+      issuer: getEnv('ISSUER'),
+      audience: getEnv('CLIENT_ID'),
+    });
     return true;
   } catch (e) {
+    console.error('JWT verification failed', e);
     return false;
   }
 }
@@ -34,9 +38,13 @@ export async function isAuthorized({
 export async function authorize({
   client,
   redirectUri,
+  ip,
+  postAuthorizationRedirectUri,
 }: {
   client: Client;
   redirectUri: string;
+  ip: string;
+  postAuthorizationRedirectUri?: string;
 }) {
   const authorizationServer = await discover();
 
@@ -59,16 +67,18 @@ export async function authorize({
   authorizationUrl.searchParams.set('response_type', 'code');
   authorizationUrl.searchParams.set(
     'scope',
-    'openid profile email offline_access'
+    `openid profile email offline_access ${client.client_id}/.default`
   );
   authorizationUrl.searchParams.set('state', state);
   authorizationUrl.searchParams.set('nonce', nonce);
 
   addPendingAuthorization({
-    authorizationUrl: authorizationUrl.toString(),
     codeVerifier,
     nonce,
     state,
+    ip,
+    timestamp: Math.floor(Date.now() / 1000),
+    postAuthorizationRedirectUri,
   });
 
   return {

@@ -24,7 +24,7 @@ export async function logout(
     'Set-Cookie': generateCookieString([
       { name: 'idToken', maxAge: 0 },
       { name: 'accessToken', maxAge: 0, httpOnly: true },
-      { name: 'refreshToken', maxAge: 0, httpOnly: true },
+      // { name: 'refreshToken', maxAge: 0, httpOnly: true },
     ]),
   });
   res.end();

@@ -9,6 +9,7 @@ import {
 } from 'oauth4webapi';
 import { discover } from './discoveryService.js';
 import { getPendingAuthorization } from './pendingAuthorizations.js';
+import { getEnv } from './utils.js';
 
 export async function getToken({
   client,
@@ -22,9 +23,8 @@ export async function getToken({
   const authorizationServer = await discover();
   const callbackUrlObj = new URL(callbackUrl);
 
-  const { state, codeVerifier, nonce } = getPendingAuthorization(
-    callbackUrlObj.searchParams.get('state')
-  );
+  const { state, codeVerifier, nonce, postAuthorizationRedirectUri } =
+    getPendingAuthorization(callbackUrlObj.searchParams.get('state'));
 
   const params = validateAuthResponse(
     authorizationServer!,
@@ -59,7 +59,7 @@ export async function getToken({
     authorizationServer!,
     client,
     response,
-    nonce
+    nonce,
   );
 
   if (isOAuth2Error(tokenResponse)) {
@@ -72,5 +72,6 @@ export async function getToken({
     idToken: tokenResponse.id_token,
     expiresIn: tokenResponse.expires_in,
     refreshToken: tokenResponse.refresh_token,
+    postAuthorizationRedirectUri,
   };
 }

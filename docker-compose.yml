@@ -1,0 +1,51 @@
+services:
+  web:
+    image: mucsi96/hello-client
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.web.loadbalancer.server.port=80"
+      - "traefik.http.middlewares.auth.forwardauth.address=http://agent:8080/authorize"
+      - "traefik.http.middlewares.auth.forwardauth.addAuthCookiesToResponse=accessToken,refreshToken,idToken"
+      - "traefik.http.routers.web.entrypoints=websecure"
+      - "traefik.http.routers.web.rule=Host(`web.auth-tools.home`)"
+      - "traefik.http.routers.web.middlewares=auth"
+      - "traefik.http.routers.web.tls=true"
+  spa:
+    build:
+      dockerfile: client.dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.spa.loadbalancer.server.port=3000"
+      - "traefik.http.routers.spa.entrypoints=websecure"
+      - "traefik.http.routers.spa.rule=Host(`spa.auth-tools.home`)"
+      - "traefik.http.routers.spa.tls=true"
+  agent:
+    env_file:
+      - .env
+    environment:
+      - PUBLIC_URL=https://auth.auth-tools.home
+      - COOKIE_DOMAIN=auth-tools.home
+    build:
+      context: ./agent
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.agent.loadbalancer.server.port=8080"
+      - "traefik.http.routers.agent.entrypoints=websecure"
+      - "traefik.http.routers.agent.rule=Host(`auth.auth-tools.home`)"
+      - "traefik.http.routers.agent.tls=true"
+  proxy:
+    image: traefik:v3.0.0
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "./test/traefik.yml:/etc/traefik/traefik.yml"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.rule=Host(`dashboard.auth-tools.home`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.tls=true"
+

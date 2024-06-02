@@ -1,8 +1,10 @@
 export type PendingAuthorization = {
-  authorizationUrl: string;
+  ip: string;
   codeVerifier: string;
   nonce: string;
   state: string;
+  timestamp: number;
+  postAuthorizationRedirectUri?: string;
 };
 
 const pendingAuthizations: PendingAuthorization[] = [];
@@ -10,6 +12,18 @@ const pendingAuthizations: PendingAuthorization[] = [];
 export function addPendingAuthorization(
   pendingAuthorization: PendingAuthorization
 ): void {
+  const timestamp = Math.floor(Date.now() / 1000);
+  if (
+    pendingAuthizations.some((authorization) => {
+      return (
+        timestamp - authorization.timestamp < 5 &&
+        pendingAuthorization.ip === authorization.ip
+      );
+    })
+  ) {
+    throw new Error('Rate limit reached for pending authorizations');
+  }
+
   pendingAuthizations.push(pendingAuthorization);
 
   if (pendingAuthizations.length > 5) {

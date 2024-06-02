@@ -37,12 +37,12 @@ export async function getToken(
         httpOnly: true,
       },
       { name: 'idToken', value: idToken, maxAge: expiresIn },
-      {
-        name: 'refreshToken',
-        value: refreshToken,
-        maxAge: 7 * 24 * 60 * 60,
-        httpOnly: true,
-      },
+      // {
+      //   name: 'refreshToken',
+      //   value: refreshToken,
+      //   maxAge: 7 * 24 * 60 * 60,
+      //   httpOnly: true,
+      // },
     ]),
   });
   res.end();

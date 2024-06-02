@@ -15,10 +15,12 @@ export async function authorize(
   }>(req);
 
   assert(redirectUri, 'Missing redirectUri');
+  assert(req.socket.remoteAddress, 'Missing remoteAddress');
 
   const { authorizationUrl } = await authorizeService.authorize({
     client,
     redirectUri,
+    ip: req.socket.remoteAddress,
   });
 
   res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -35,6 +37,18 @@ export async function serverAuthorize(
     accessToken: string;
   }>(req.headers.cookie);
 
+  const proto = req.headers['x-forwarded-proto'];
+  const host = req.headers['x-forwarded-host'];
+  const uri = req.headers['x-forwarded-uri'];
+  const ip = req.headers['x-forwarded-for'];
+
+  assert(proto, 'Missing x-forwarded-proto');
+  assert(host, 'Missing x-forwarded-host');
+  assert(uri, 'Missing x-forwarded-uri');
+  assert(ip, 'Missing x-forwarded-for');
+
+  const postAuthorizationRedirectUri = `${proto}://${host}${uri}`;
+
   if (await authorizeService.isAuthorized({ accessToken })) {
     res.writeHead(200);
     res.write('Authorized');
@@ -45,6 +59,8 @@ export async function serverAuthorize(
   const { authorizationUrl } = await authorizeService.authorize({
     client,
     redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
+    postAuthorizationRedirectUri,
+    ip: ip.toString(),
   });
 
   res.writeHead(302, { Location: authorizationUrl });

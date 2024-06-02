@@ -10,17 +10,24 @@ export async function handleCallback(
   req: IncomingMessage,
   res: ServerResponse
 ) {
-  const { accessToken, expiresIn, refreshToken, idToken } =
-    await tokenService.getToken({
-      client,
-      callbackUrl: `${getEnv('PUBLIC_URL')}${req.url}`,
-      redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
-    });
+  const {
+    accessToken,
+    expiresIn,
+    refreshToken,
+    idToken,
+    postAuthorizationRedirectUri,
+  } = await tokenService.getToken({
+    client,
+    callbackUrl: `${getEnv('PUBLIC_URL')}${req.url}`,
+    redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
+  });
 
   assert(expiresIn, 'Access token already expired');
   assert(refreshToken, 'Refresh token is not returned');
+  assert(postAuthorizationRedirectUri, 'Missing postAuthorizationRedirectUri');
 
-  res.writeHead(200, {
+  res.writeHead(302, {
+    Location: postAuthorizationRedirectUri,
     'Set-Cookie': generateCookieString([
       {
         name: 'accessToken',
@@ -29,14 +36,13 @@ export async function handleCallback(
         httpOnly: true,
       },
       { name: 'idToken', value: idToken, maxAge: expiresIn },
-      {
-        name: 'refreshToken',
-        value: refreshToken,
-        maxAge: 7 * 24 * 60 * 60,
-        httpOnly: true,
-      },
+      // {
+      //   name: 'refreshToken',
+      //   value: refreshToken,
+      //   maxAge: 7 * 24 * 60 * 60,
+      //   httpOnly: true,
+      // },
     ]),
   });
-  res.write('Authorized');
   res.end();
 }
