@@ -6,6 +6,30 @@ import {
   generateRandomState,
 } from 'oauth4webapi';
 import { discover } from './discoveryService.js';
+import { addPendingAuthorization } from './pendingAuthorizations.js';
+import { jwtVerify, createRemoteJWKSet } from 'jose';
+
+export async function isAuthorized({
+  accessToken,
+}: {
+  accessToken: string;
+}): Promise<boolean> {
+  try {
+    const authorizationServer = await discover();
+
+    if (!authorizationServer.jwks_uri) {
+      throw new Error('No JWKS URI discovered');
+    }
+
+    await jwtVerify(
+      accessToken,
+      createRemoteJWKSet(new URL(authorizationServer.jwks_uri))
+    );
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
 
 export async function authorize({
   client,
@@ -40,10 +64,14 @@ export async function authorize({
   authorizationUrl.searchParams.set('state', state);
   authorizationUrl.searchParams.set('nonce', nonce);
 
-  return {
+  addPendingAuthorization({
+    authorizationUrl: authorizationUrl.toString(),
     codeVerifier,
-    state,
     nonce,
+    state,
+  });
+
+  return {
     authorizationUrl: authorizationUrl.toString(),
   };
 }

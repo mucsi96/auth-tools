@@ -10,7 +10,7 @@ export async function handleCallback(
   req: IncomingMessage,
   res: ServerResponse
 ) {
-  const { accessToken, expiresIn, refreshToken, subject } =
+  const { accessToken, expiresIn, refreshToken, idToken } =
     await tokenService.getToken({
       client,
       callbackUrl: `${getEnv('PUBLIC_URL')}${req.url}`,
@@ -22,12 +22,18 @@ export async function handleCallback(
 
   res.writeHead(200, {
     'Set-Cookie': generateCookieString([
-      { name: 'accessToken', value: accessToken, maxAge: expiresIn },
-      { name: 'subject', value: subject, maxAge: expiresIn },
+      {
+        name: 'accessToken',
+        value: accessToken,
+        maxAge: expiresIn,
+        httpOnly: true,
+      },
+      { name: 'idToken', value: idToken, maxAge: expiresIn },
       {
         name: 'refreshToken',
         value: refreshToken,
         maxAge: 7 * 24 * 60 * 60,
+        httpOnly: true,
       },
     ]),
   });

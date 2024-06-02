@@ -2,7 +2,6 @@ import {
   Client,
   WWWAuthenticateChallenge,
   authorizationCodeGrantRequest,
-  getValidatedIdTokenClaims,
   isOAuth2Error,
   parseWwwAuthenticateChallenges,
   processAuthorizationCodeOpenIDResponse,
@@ -68,13 +67,9 @@ export async function getToken({
     throw new Error('OAuth 2.0 response body error');
   }
 
-  console.log('tokenResponse', tokenResponse);
-
-  const { sub } = getValidatedIdTokenClaims(tokenResponse) ?? {};
-
   return {
-    subject: sub!,
     accessToken: tokenResponse.access_token,
+    idToken: tokenResponse.id_token,
     expiresIn: tokenResponse.expires_in,
     refreshToken: tokenResponse.refresh_token,
   };

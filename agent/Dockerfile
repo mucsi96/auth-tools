@@ -1,9 +1,9 @@
 FROM node:20-alpine as build-deps
 WORKDIR /usr/src/app
-COPY package.json yarn.lock ./
-RUN yarn --frozen-lockfile
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY . ./
-RUN yarn build
+RUN npm run build
 
 FROM node:20-alpine
 COPY --from=build-deps /usr/src/app/package.json ./

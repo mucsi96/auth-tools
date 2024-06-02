@@ -17,7 +17,7 @@ export async function getToken(
   assert(redirectUri, 'Missing redirectUri');
   assert(callbackUrl, 'Missing callbackUrl');
 
-  const { accessToken, expiresIn, refreshToken, subject } =
+  const { accessToken, expiresIn, refreshToken, idToken } =
     await tokenService.getToken({
       client,
       callbackUrl,
@@ -30,12 +30,18 @@ export async function getToken(
   res.writeHead(200, {
     'Content-Type': 'application/json',
     'Set-Cookie': generateCookieString([
-      { name: 'accessToken', value: accessToken, maxAge: expiresIn },
-      { name: 'subject', value: subject, maxAge: expiresIn },
+      {
+        name: 'accessToken',
+        value: accessToken,
+        maxAge: expiresIn,
+        httpOnly: true,
+      },
+      { name: 'idToken', value: idToken, maxAge: expiresIn },
       {
         name: 'refreshToken',
         value: refreshToken,
         maxAge: 7 * 24 * 60 * 60,
+        httpOnly: true,
       },
     ]),
   });

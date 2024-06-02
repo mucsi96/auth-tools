@@ -2,7 +2,6 @@ import http, { IncomingMessage, ServerResponse } from 'http';
 import { authorize, serverAuthorize } from './authorizationController.js';
 import { getEnv, returnError } from './utils.js';
 import { getToken } from './tokenController.js';
-import { getUserInfo } from './userInfoController.js';
 import { logout } from './logoutController.js';
 import { handleCallback } from './callbackController.js';
 import { getClientConfig } from './clientConfig.js';
@@ -23,10 +22,6 @@ const server = http.createServer(
       console.log(req.method, req.url);
 
       const client = getClientConfig();
-
-      if (req.url === BASE_PATH + '/user-info' && req.method === 'GET') {
-        return await getUserInfo(client, req, res);
-      }
 
       if (req.url === BASE_PATH + '/authorize' && req.method === 'POST') {
         return await authorize(client, req, res);

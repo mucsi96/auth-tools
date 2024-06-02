@@ -37,18 +37,23 @@ export function returnError(
 }
 
 export function generateCookieString(
-  cookies: { name: string; value?: string; maxAge: number }[]
+  cookies: {
+    name: string;
+    value?: string;
+    maxAge: number;
+    httpOnly?: boolean;
+  }[]
 ): string[] {
   return cookies
-    .map(({ name, value, maxAge }) => {
+    .map(({ name, value, maxAge, httpOnly }) => {
       const cookieOptions = [
-        'HttpOnly',
+        httpOnly && 'HttpOnly',
         'SameSite=Lax',
         'Secure',
         'Path=/',
         `Domain=${getEnv('COOKIE_DOMAIN')}`,
         `Max-Age=${maxAge}`,
-      ];
+      ].filter(Boolean);
 
       return `${name}=${
         value ? encodeURIComponent(value) : ''
@@ -71,4 +76,9 @@ export function parseCookieString<T>(cookieString?: string): T {
       return acc;
     }
   }, {}) as T;
+}
+
+export function getIdTokenClaims(idToken: string): Record<string, any> {
+  const [, payload] = idToken.split('.');
+  return JSON.parse(Buffer.from(payload, 'base64').toString());
 }

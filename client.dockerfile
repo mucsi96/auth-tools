@@ -5,7 +5,7 @@ RUN npm install -g serve
 COPY client_lib/package.json client_lib/package-lock.json ./
 RUN npm ci
 COPY client_lib ./
-RUN yarn build
+RUN npm run build
 
 COPY test/index.html ./
 

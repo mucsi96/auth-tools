@@ -3,3 +3,4 @@
 - Add publishing
 - Hoist dockerfiles to root
 - Add admin and guest users + tests
+- Refresh access token
