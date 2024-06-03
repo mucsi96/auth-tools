@@ -20,17 +20,21 @@
       tokenAgent: "https://auth.auth-tools.home",
       postAuthorizationRedirectUri: "/",
       navigateToSignin: () => {
-        window.location.href = "/login";
+        history.pushState(null, "", "/login");
       },
     });
 
-    switch (window.location.pathname) {
-      case "/login":
-        break;
-      default:
-        assertRole("admin");
-        break;
+    function route() {
+      switch (window.location.pathname) {
+        case "/login":
+          break;
+        default:
+          assertRole("admin");
+          break;
+      }
     }
+
+    route();
   </script>
   <body>
     <header bt>
