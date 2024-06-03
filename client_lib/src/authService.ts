@@ -1,4 +1,7 @@
-import { ErrorNotificationEvent } from '@mucsi96/ui-elements';
+import {
+  ErrorNotificationEvent,
+  SuccessNotificationEvent,
+} from '@mucsi96/ui-elements';
 import { jwtDecode } from 'jwt-decode';
 
 type Options = {
@@ -99,6 +102,9 @@ export async function signout() {
       throw new Error('Failed to sign out');
     }
 
+    document.dispatchEvent(
+      new SuccessNotificationEvent('Successfully signed out')
+    );
     options.navigateToSignin();
   } catch (err) {
     document.dispatchEvent(new ErrorNotificationEvent('Authentication failed'));
