@@ -1,11 +1,18 @@
 {
   "version": "2.0.0",
+  "osx": {
+    "options": {
+      "shell": {
+        "executable": "${env:SHELL}",
+        "args": ["--login", "--interactive"]
+      }
+    }
+  },
   "tasks": [
     {
       "type": "shell",
-      "command": "bash",
+      "command": "./scripts/install_dependencies.sh",
       "label": "Install dependencies",
-      "args": ["scripts/install_dependencies.sh"],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -13,8 +20,7 @@
     },
     {
       "type": "shell",
-      "command": "npm",
-      "args": ["start"],
+      "command": "npm start",
       "isBackground": true,
       "label": "Start agent",
       "options": { "cwd": "${workspaceFolder}/agent" },
@@ -22,8 +28,7 @@
     },
     {
       "type": "shell",
-      "command": "npm",
-      "args": ["run", "build"],
+      "command": "npm run build",
       "isBackground": true,
       "label": "Build agent",
       "options": { "cwd": "${workspaceFolder}/agent" },

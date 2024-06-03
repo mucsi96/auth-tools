@@ -3,64 +3,53 @@ import * as authorizeService from './authorizationService.js';
 import assert from 'assert';
 import { IncomingMessage, ServerResponse } from 'http';
 import { Client } from 'oauth4webapi';
-import { getBody, getEnv, parseCookieString } from './utils.js';
+import {
+  getEnv,
+  getQueryParams,
+  parseCookieString
+} from './utils.js';
 
 export async function authorize(
   client: Client,
   req: IncomingMessage,
   res: ServerResponse
 ) {
-  const { redirectUri } = await getBody<{
-    redirectUri?: string;
+  let ip = req.socket.remoteAddress;
+  let { postAuthorizationRedirectUri } = getQueryParams<{
+    postAuthorizationRedirectUri?: string;
   }>(req);
 
-  assert(redirectUri, 'Missing redirectUri');
-  assert(req.socket.remoteAddress, 'Missing remoteAddress');
+  if (!postAuthorizationRedirectUri) {
+    const { accessToken } = parseCookieString<{
+      accessToken: string;
+    }>(req.headers.cookie);
 
-  const { authorizationUrl } = await authorizeService.authorize({
-    client,
-    redirectUri,
-    ip: req.socket.remoteAddress,
-  });
+    if (await authorizeService.isAuthorized({ accessToken })) {
+      res.writeHead(200);
+      res.write('Authorized');
+      res.end();
+      return;
+    }
 
-  res.writeHead(200, { 'Content-Type': 'application/json' });
-  res.write(JSON.stringify({ authorizationUrl }));
-  res.end();
-}
+    const proto = req.headers['x-forwarded-proto'];
+    const host = req.headers['x-forwarded-host'];
+    const uri = req.headers['x-forwarded-uri'];
+    ip = req.headers['x-forwarded-for']?.toString();
 
-export async function serverAuthorize(
-  client: Client,
-  req: IncomingMessage,
-  res: ServerResponse
-) {
-  const { accessToken } = parseCookieString<{
-    accessToken: string;
-  }>(req.headers.cookie);
+    assert(proto, 'Missing x-forwarded-proto');
+    assert(host, 'Missing x-forwarded-host');
+    assert(uri, 'Missing x-forwarded-uri');
 
-  const proto = req.headers['x-forwarded-proto'];
-  const host = req.headers['x-forwarded-host'];
-  const uri = req.headers['x-forwarded-uri'];
-  const ip = req.headers['x-forwarded-for'];
-
-  assert(proto, 'Missing x-forwarded-proto');
-  assert(host, 'Missing x-forwarded-host');
-  assert(uri, 'Missing x-forwarded-uri');
-  assert(ip, 'Missing x-forwarded-for');
-
-  const postAuthorizationRedirectUri = `${proto}://${host}${uri}`;
-
-  if (await authorizeService.isAuthorized({ accessToken })) {
-    res.writeHead(200);
-    res.write('Authorized');
-    res.end();
-    return;
+    postAuthorizationRedirectUri = `${proto}://${host}${uri}`;
   }
+
+  assert(ip, 'Missing ip address');
 
   const { authorizationUrl } = await authorizeService.authorize({
     client,
     redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
     postAuthorizationRedirectUri,
-    ip: ip.toString(),
+    ip,
   });
 
   res.writeHead(302, { Location: authorizationUrl });

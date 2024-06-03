@@ -14,18 +14,11 @@
     }
   </style>
   <script type="module">
-    import {
-      init,
-      signin,
-      assertRole,
-      handleSigninRedirectCallback,
-    } from "/dist/index.mjs";
+    import { init, signin, assertRole } from "/dist/index.mjs";
 
     init({
-      redirectUri: "/callback",
-      navigateHome: () => {
-        window.location.href = "/";
-      },
+      tokenAgent: "https://auth.auth-tools.home",
+      postAuthorizationRedirectUri: "/",
       navigateToSignin: () => {
         window.location.href = "/login";
       },
@@ -33,9 +26,6 @@
 
     switch (window.location.pathname) {
       case "/login":
-        break;
-      case "/callback":
-        handleSigninRedirectCallback();
         break;
       default:
         assertRole("admin");

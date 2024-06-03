@@ -1,7 +1,6 @@
 import http, { IncomingMessage, ServerResponse } from 'http';
-import { authorize, serverAuthorize } from './authorizationController.js';
-import { getEnv, returnError } from './utils.js';
-import { getToken } from './tokenController.js';
+import { authorize } from './authorizationController.js';
+import { createCorsHeaders, getEnv, returnError } from './utils.js';
 import { logout } from './logoutController.js';
 import { handleCallback } from './callbackController.js';
 import { getClientConfig } from './clientConfig.js';
@@ -23,36 +22,39 @@ const server = http.createServer(
 
       const client = getClientConfig();
 
-      if (req.url === BASE_PATH + '/authorize' && req.method === 'POST') {
+      if (req.method === 'OPTIONS') {
+        res.writeHead(200, createCorsHeaders(req));
+        res.end();
+        return;
+      }
+
+      if (
+        req.url?.startsWith(BASE_PATH + '/authorize') &&
+        req.method === 'GET'
+      ) {
         return await authorize(client, req, res);
       }
 
-      if (req.url === BASE_PATH + '/get-token' && req.method === 'POST') {
-        return await getToken(client, req, res);
-      }
-
-      if (req.url === BASE_PATH + '/logout' && req.method === 'POST') {
-        return await logout(client, req, res);
-      }
-
-      // These routes are for classic web authorization code flow
-      if (req.url === BASE_PATH + '/authorize' && req.method === 'GET') {
-        return await serverAuthorize(client, req, res);
-      }
-
-      if (req.url?.startsWith(BASE_PATH + '/callback') && req.method === 'GET') {
+      if (
+        req.url?.startsWith(BASE_PATH + '/callback') &&
+        req.method === 'GET'
+      ) {
         return await handleCallback(client, req, res);
       }
 
-      return returnError(res, 404, 'Route not found');
+      if (req.url === BASE_PATH + '/logout' && req.method === 'POST') {
+        return await logout(req, res);
+      }
+
+      return returnError(req, res, 404, 'Route not found');
     } catch (e) {
       console.log((e as Error).stack);
 
       if (e instanceof AssertionError) {
-        return returnError(res, 400, e.message);
+        return returnError(req, res, 400, e.message);
       }
 
-      return returnError(res, 500, 'Something went wrong');
+      return returnError(req, res, 500, 'Something went wrong');
     }
   }
 );

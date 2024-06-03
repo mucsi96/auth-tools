@@ -1,57 +1,54 @@
 import { ErrorNotificationEvent } from '@mucsi96/ui-elements';
+import { jwtDecode } from 'jwt-decode';
 
 type Options = {
-  redirectUri: string;
-  navigateHome: () => void;
+  tokenAgent: string;
+  postAuthorizationRedirectUri: string;
   navigateToSignin: () => void;
 };
 
 let options: Options | undefined;
-let userInfo:
-  | { isSignedIn: boolean; userName: string; roles: string[] }
-  | undefined;
 
 export function init(newOptions: Options) {
   options = {
     ...newOptions,
-    redirectUri: location.origin + newOptions.redirectUri,
+    postAuthorizationRedirectUri:
+      location.origin + newOptions.postAuthorizationRedirectUri,
   };
-  userInfo = undefined;
 }
 
-export async function getUserInfo() {
-  if (userInfo) {
-    return userInfo;
-  }
+export function getUserInfo() {
+  const idToken = document.cookie
+    .split('; ')
+    .find((cookie) => cookie.startsWith('idToken='))
+    ?.split('=')[1];
 
-  const res = await fetch('/auth/user-info');
-
-  if (!res.ok) {
-    return { isSignedIn: false };
-  }
   try {
-    const responseBody = (await res.json()) as {
-      sub: string;
-      name: string;
-      groups: string[];
-    };
+    if (!idToken) {
+      return { isSignedIn: false };
+    }
 
-    userInfo = {
-      isSignedIn: !!responseBody.sub,
-      userName: responseBody.name,
-      roles: responseBody.groups ?? [],
-    };
+    const { name, email } = jwtDecode<{ name: string; email: string }>(idToken);
 
-    return userInfo;
+    return {
+      isSignedIn: true,
+      userName: name,
+      email,
+      initials: name
+        .split(' ')
+        .map((n) => n[0])
+        .join(''),
+      roles: ['admin'],
+    };
   } catch (err) {
     return { isSignedIn: false };
   }
 }
 
 export async function hasRole(role: string) {
-  const userInfo = await getUserInfo();
+  const userInfo = getUserInfo();
 
-  if (!('roles' in userInfo)) {
+  if (!('roles' in userInfo) || !userInfo.roles) {
     return false;
   }
 
@@ -77,54 +74,14 @@ export async function signin() {
     throw new Error('Auth tools not initialized');
   }
 
-  try {
-    const res = await fetch('/auth/authorize', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        redirectUri: options.redirectUri,
-      }),
-    });
+  const authorizationUrl = new URL(`${options.tokenAgent}/authorize`);
 
-    if (!res.ok) {
-      throw new Error('Failed to sign in');
-    }
+  authorizationUrl.searchParams.set(
+    'postAuthorizationRedirectUri',
+    options.postAuthorizationRedirectUri
+  );
 
-    const { authorizationUrl } = await res.json();
-
-    location.href = authorizationUrl;
-  } catch (err) {
-    document.dispatchEvent(new ErrorNotificationEvent('Authentication failed'));
-  }
-}
-
-export async function handleSigninRedirectCallback() {
-  if (!options) {
-    throw new Error('Auth tools not initialized');
-  }
-
-  try {
-    const res = await fetch('/auth/get-token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        callbackUrl: decodeURI(location.href),
-        redirectUri: options.redirectUri,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error('Failed to handle signin redirect callback');
-    }
-
-    options.navigateHome();
-  } catch (err) {
-    document.dispatchEvent(new ErrorNotificationEvent('Authentication failed'));
-  }
+  location.href = authorizationUrl.toString();
 }
 
 export async function signout() {
@@ -133,8 +90,9 @@ export async function signout() {
   }
 
   try {
-    const res = await fetch('/auth/logout', {
+    const res = await fetch(`${options.tokenAgent}/logout`, {
       method: 'POST',
+      credentials: 'include',
     });
 
     if (!res.ok) {

@@ -3,7 +3,7 @@ import * as tokenService from './tokenService.js';
 import assert from 'assert';
 import { IncomingMessage, ServerResponse } from 'http';
 import { Client } from 'oauth4webapi';
-import { generateCookieString, getEnv } from './utils.js';
+import { createCookieHeader, getEnv } from './utils.js';
 
 export async function handleCallback(
   client: Client,
@@ -28,14 +28,15 @@ export async function handleCallback(
 
   res.writeHead(302, {
     Location: postAuthorizationRedirectUri,
-    'Set-Cookie': generateCookieString([
+    ...createCookieHeader([
       {
         name: 'accessToken',
         value: accessToken,
         maxAge: expiresIn,
         httpOnly: true,
+        sameSite: true,
       },
-      { name: 'idToken', value: idToken, maxAge: expiresIn },
+      { name: 'idToken', value: idToken, maxAge: expiresIn, sameSite: true },
       // {
       //   name: 'refreshToken',
       //   value: refreshToken,
