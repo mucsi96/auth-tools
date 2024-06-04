@@ -14,13 +14,14 @@
     }
   </style>
   <script type="module">
-    import { init, signin, assertRole } from "/dist/index.mjs";
+    import { init, signin, assertRole, hasRole } from "/dist/index.mjs";
 
     init({
       tokenAgent: "https://auth.auth-tools.home",
       postAuthorizationRedirectUri: "/",
       navigateToSignin: () => {
         history.pushState(null, "", "/login");
+        route();
       },
     });
 
@@ -32,24 +33,37 @@
           assertRole("admin");
           break;
       }
+      render();
+    }
+
+    function render() {
+      document.body.innerHTML = `
+        <header bt>
+          <nav>
+            <a href="/" bt-logo>Authtools test</a>
+            <ul>
+              <li><a href="/" bt-active>Home</a></li>
+              ${hasRole("admin") ? '<li><a href="/admin">Admin</a></li>' : ""}
+              <li><a href="/about">About</a></li>
+            </ul>
+            <section bt-user-info></section>
+            <button bt-navbar-toggler popovertarget="navbar-popover"></button>
+            <div popover bt id="navbar-popover">
+              <ul bt-dropdown-menu>
+                <li><a href="/" bt-active>Home</a></li>
+                ${hasRole("admin") ? '<li><a href="/admin">Admin</a></li>' : ""}
+                <li><a href="/about">About</a></li>
+              </ul>
+            </div>
+          </nav>
+        </header>
+        <main bt>
+          <section bt-notifications></section>
+        </main>
+      `;
     }
 
     route();
   </script>
-  <body>
-    <header bt>
-      <nav>
-        <a href="/" bt-logo>Authtools test</a>
-        <ul>
-          <li><a href="/" bt-active>Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/contact">Contact</a></li>
-        </ul>
-        <section bt-user-info></section>
-      </nav>
-    </header>
-    <main bt>
-      <section bt-notifications></section>
-    </main>
-  </body>
+  <body></body>
 </html>

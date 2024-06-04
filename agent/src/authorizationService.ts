@@ -67,7 +67,7 @@ export async function authorize({
   authorizationUrl.searchParams.set('response_type', 'code');
   authorizationUrl.searchParams.set(
     'scope',
-    `openid profile email offline_access ${client.client_id}/.default`
+    `openid profile email ${getEnv('CLIENT_SCOPE')}`
   );
   authorizationUrl.searchParams.set('state', state);
   authorizationUrl.searchParams.set('nonce', nonce);

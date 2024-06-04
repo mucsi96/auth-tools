@@ -31,24 +31,29 @@ export function getUserInfo() {
       return { isSignedIn: false };
     }
 
-    const { name, email } = jwtDecode<{ name: string; email: string }>(idToken);
+    const { name, email, roles, preferred_username } = jwtDecode<{
+      name: string;
+      email: string;
+      roles: string[];
+      preferred_username: string;
+    }>(idToken);
 
     return {
       isSignedIn: true,
       userName: name,
-      email,
+      email: email ?? preferred_username,
       initials: name
         .split(' ')
         .map((n) => n[0])
         .join(''),
-      roles: ['admin'],
+      roles,
     };
   } catch (err) {
     return { isSignedIn: false };
   }
 }
 
-export async function hasRole(role: string) {
+export function hasRole(role: string) {
   const userInfo = getUserInfo();
 
   if (!('roles' in userInfo) || !userInfo.roles) {
@@ -58,13 +63,13 @@ export async function hasRole(role: string) {
   return userInfo.roles.includes(role);
 }
 
-export async function assertRole(role: string) {
+export function assertRole(role: string) {
   if (!options) {
     throw new Error('Auth tools not initialized');
   }
 
   try {
-    if (!(await hasRole(role))) {
+    if (!hasRole(role)) {
       throw new Error('Unauthorized');
     }
   } catch (err) {
@@ -72,7 +77,7 @@ export async function assertRole(role: string) {
   }
 }
 
-export async function signin() {
+export function signin() {
   if (!options) {
     throw new Error('Auth tools not initialized');
   }

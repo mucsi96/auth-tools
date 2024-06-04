@@ -23,7 +23,7 @@ export async function handleCallback(
   });
 
   assert(expiresIn, 'Access token already expired');
-  assert(refreshToken, 'Refresh token is not returned');
+  // assert(refreshToken, 'Refresh token is not returned');
   assert(postAuthorizationRedirectUri, 'Missing postAuthorizationRedirectUri');
 
   res.writeHead(302, {

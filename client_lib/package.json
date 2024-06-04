@@ -20,7 +20,7 @@
     "vite-plugin-dts": "^3.8.1"
   },
   "dependencies": {
-    "@mucsi96/ui-elements": "^43.0.0",
+    "@mucsi96/ui-elements": "^45.0.0",
     "jwt-decode": "^4.0.0"
   }
 }
