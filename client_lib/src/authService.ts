@@ -21,13 +21,13 @@ export function init(newOptions: Options) {
 }
 
 export function getUserInfo() {
-  const idToken = document.cookie
+  const tokenClaims = document.cookie
     .split('; ')
-    .find((cookie) => cookie.startsWith('idToken='))
+    .find((cookie) => cookie.startsWith('tokenClaims='))
     ?.split('=')[1];
 
   try {
-    if (!idToken) {
+    if (!tokenClaims) {
       return { isSignedIn: false };
     }
 
@@ -36,7 +36,7 @@ export function getUserInfo() {
       email: string;
       roles: string[];
       preferred_username: string;
-    }>(idToken);
+    }>(`.${tokenClaims}`);
 
     return {
       isSignedIn: true,
@@ -87,6 +87,13 @@ export function signin() {
   authorizationUrl.searchParams.set(
     'postAuthorizationRedirectUri',
     options.postAuthorizationRedirectUri
+  );
+
+  authorizationUrl.searchParams.set(
+    'scopes',
+    `openid profile ${import.meta.env.VITE_DEMO_API_CLIENT_ID}/read ${
+      import.meta.env.VITE_DEMO_API_CLIENT_ID
+    }/write`
   );
 
   location.href = authorizationUrl.toString();

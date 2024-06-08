@@ -12,7 +12,24 @@ export function getEnv(name: string): string {
 
 export function getQueryParams<T>(req: IncomingMessage): T {
   const url = new URL(req.url || '', `http://${req.headers.host}`);
-  return Object.fromEntries(url.searchParams.entries()) as T;
+  const queryParams = url.searchParams;
+  const result: Record<string, string | string[]> = {};
+
+  queryParams.forEach((value, key) => {
+    const existingValue = result[key];
+
+    if (existingValue) {
+      if (Array.isArray(existingValue)) {
+        existingValue.push(value);
+      } else {
+        result[key] = [existingValue, value];
+      }
+    } else {
+      result[key] = value;
+    }
+  });
+
+  return result as T;
 }
 
 export function getBody<T>(req: IncomingMessage): Promise<T> {
@@ -90,7 +107,9 @@ export function parseCookieString<T>(cookieString?: string): T {
   }, {}) as T;
 }
 
-export function createCorsHeaders(req: IncomingMessage): Record<string, string> {
+export function createCorsHeaders(
+  req: IncomingMessage
+): Record<string, string> {
   return req.headers.origin?.split('.').slice(-2).join('.') ===
     getEnv('PUBLIC_URL').split('.').slice(-2).join('.')
     ? {

@@ -4,9 +4,9 @@ import {
   isOAuth2Error,
   parseWwwAuthenticateChallenges,
   processRefreshTokenResponse,
-  refreshTokenGrantRequest
-} from "oauth4webapi";
-import { discover } from "./discoveryService.js";
+  refreshTokenGrantRequest,
+} from 'oauth4webapi';
+import { discover } from './discoveryService.js';
 
 export async function getFreshToken({
   client,
@@ -15,7 +15,7 @@ export async function getFreshToken({
   client: Client;
   refreshToken: string;
 }) {
-  const authorizationServer = await discover();
+  const { authorizationServer } = await discover();
 
   const response = await refreshTokenGrantRequest(
     authorizationServer,
@@ -27,9 +27,9 @@ export async function getFreshToken({
 
   if ((challenges = parseWwwAuthenticateChallenges(response))) {
     for (const challenge of challenges) {
-      console.log("challenge", challenge);
+      console.log('challenge', challenge);
     }
-    throw new Error("www-authenticate challenge");
+    throw new Error('www-authenticate challenge');
   }
 
   const tokenResponse = await processRefreshTokenResponse(
@@ -39,8 +39,8 @@ export async function getFreshToken({
   );
 
   if (isOAuth2Error(tokenResponse)) {
-    console.log("error", tokenResponse);
-    throw new Error("OAuth 2.0 response body error");
+    console.log('error', tokenResponse);
+    throw new Error('OAuth 2.0 response body error');
   }
 
   return {

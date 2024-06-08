@@ -3,11 +3,7 @@ import * as authorizeService from './authorizationService.js';
 import assert from 'assert';
 import { IncomingMessage, ServerResponse } from 'http';
 import { Client } from 'oauth4webapi';
-import {
-  getEnv,
-  getQueryParams,
-  parseCookieString
-} from './utils.js';
+import { getEnv, getQueryParams, parseCookieString } from './utils.js';
 
 export async function authorize(
   client: Client,
@@ -15,8 +11,10 @@ export async function authorize(
   res: ServerResponse
 ) {
   let ip = req.socket.remoteAddress;
-  let { postAuthorizationRedirectUri } = getQueryParams<{
+  let { postAuthorizationRedirectUri, scopes, requiredRoles } = getQueryParams<{
     postAuthorizationRedirectUri?: string;
+    scopes: string | string[];
+    requiredRoles?: string | string[];
   }>(req);
 
   if (!postAuthorizationRedirectUri) {
@@ -24,7 +22,18 @@ export async function authorize(
       accessToken: string;
     }>(req.headers.cookie);
 
-    if (await authorizeService.isAuthorized({ accessToken })) {
+    if (
+      await authorizeService.isAuthorized({
+        accessToken,
+        requiredScopes: Array.isArray(scopes) ? scopes : [scopes],
+        requiredRoles:
+          requiredRoles && Array.isArray(requiredRoles)
+            ? requiredRoles
+            : requiredRoles
+            ? [requiredRoles]
+            : [],
+      })
+    ) {
       res.writeHead(200);
       res.write('Authorized');
       res.end();
@@ -50,6 +59,7 @@ export async function authorize(
     redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
     postAuthorizationRedirectUri,
     ip,
+    scopes: Array.isArray(scopes) ? scopes : [scopes],
   });
 
   res.writeHead(302, { Location: authorizationUrl });

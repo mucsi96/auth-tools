@@ -9,7 +9,8 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
-    "lib": ["esnext", "dom"]
+    "lib": ["esnext", "dom"],
+    "types": ["vite/client"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

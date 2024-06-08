@@ -1,4 +1,6 @@
 FROM node:20-alpine
+ARG DEMO_API_CLIENT_ID
+ENV VITE_DEMO_API_CLIENT_ID=$DEMO_API_CLIENT_ID
 WORKDIR /app/client
 RUN npm install -g serve
 

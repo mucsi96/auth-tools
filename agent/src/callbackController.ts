@@ -4,23 +4,19 @@ import assert from 'assert';
 import { IncomingMessage, ServerResponse } from 'http';
 import { Client } from 'oauth4webapi';
 import { createCookieHeader, getEnv } from './utils.js';
+import { base64url } from 'jose';
 
 export async function handleCallback(
   client: Client,
   req: IncomingMessage,
   res: ServerResponse
 ) {
-  const {
-    accessToken,
-    expiresIn,
-    refreshToken,
-    idToken,
-    postAuthorizationRedirectUri,
-  } = await tokenService.getToken({
-    client,
-    callbackUrl: `${getEnv('PUBLIC_URL')}${req.url}`,
-    redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
-  });
+  const { accessToken, expiresIn, postAuthorizationRedirectUri, claims } =
+    await tokenService.getToken({
+      client,
+      callbackUrl: `${getEnv('PUBLIC_URL')}${req.url}`,
+      redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
+    });
 
   assert(expiresIn, 'Access token already expired');
   // assert(refreshToken, 'Refresh token is not returned');
@@ -36,7 +32,13 @@ export async function handleCallback(
         httpOnly: true,
         sameSite: true,
       },
-      { name: 'idToken', value: idToken, maxAge: expiresIn, sameSite: true },
+      // { name: 'idToken', value: idToken, maxAge: expiresIn, sameSite: true },
+      {
+        name: 'tokenClaims',
+        value: base64url.encode(JSON.stringify(claims)),
+        maxAge: expiresIn,
+        sameSite: true,
+      },
       // {
       //   name: 'refreshToken',
       //   value: refreshToken,

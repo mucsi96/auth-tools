@@ -30,7 +30,7 @@
         case "/login":
           break;
         default:
-          assertRole("admin");
+          assertRole("Reader");
           break;
       }
       render();
@@ -43,7 +43,7 @@
             <a href="/" bt-logo>Authtools test</a>
             <ul>
               <li><a href="/" bt-active>Home</a></li>
-              ${hasRole("admin") ? '<li><a href="/admin">Admin</a></li>' : ""}
+              ${hasRole("Writer") ? '<li><a href="/admin">Admin</a></li>' : ""}
               <li><a href="/about">About</a></li>
             </ul>
             <section bt-user-info></section>
@@ -51,7 +51,7 @@
             <div popover bt id="navbar-popover">
               <ul bt-dropdown-menu>
                 <li><a href="/" bt-active>Home</a></li>
-                ${hasRole("admin") ? '<li><a href="/admin">Admin</a></li>' : ""}
+                ${hasRole("Writer") ? '<li><a href="/admin">Admin</a></li>' : ""}
                 <li><a href="/about">About</a></li>
               </ul>
             </div>

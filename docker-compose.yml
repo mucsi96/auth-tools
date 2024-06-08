@@ -13,6 +13,8 @@ services:
   spa:
     build:
       dockerfile: client.dockerfile
+      args:
+        - DEMO_API_CLIENT_ID=$DEMO_API_CLIENT_ID
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.spa.loadbalancer.server.port=3000"

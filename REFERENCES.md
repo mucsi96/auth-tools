@@ -3,3 +3,6 @@
 - [OAuth 2.0 PKCE Flow with Azure AD](https://medium.com/@shoaib.alam/part-4-oauth-2-0-pkce-flow-with-azure-ad-cc225c0ed9f6)
 - [Traefik - Replacing Basic Authentication with Azure SSO Using ForwardAuth](https://scottmckendry.tech/traefik-replacing-basic-authentication-with-sso/)
 - [The .default scope](https://learn.microsoft.com/en-us/entra/identity-platform/scopes-oidc#the-default-scope)
+- [Understanding OAuth Scopes And Roles In Azure AD](https://cloudfirstapproach.com/understanding-oauth-scopes-and-roles-in-azure-ad/)
+- [Overview of permissions and consent in the Microsoft identity platform](https://learn.microsoft.com/en-us/entra/identity-platform/permissions-consent-overview)
+- [Understanding the concepts of access control [The Confused Developer]](https://www.youtube.com/watch?v=vULfBEn8N7E&t=1s)

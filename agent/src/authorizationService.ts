@@ -12,22 +12,23 @@ import { getEnv } from './utils.js';
 
 export async function isAuthorized({
   accessToken,
+  requiredScopes,
+  requiredRoles,
 }: {
   accessToken: string;
+  requiredScopes: string[];
+  requiredRoles: string[];
 }): Promise<boolean> {
   try {
-    const authorizationServer = await discover();
+    const { jwks } = await discover();
 
-    if (!authorizationServer.jwks_uri) {
-      throw new Error('No JWKS URI discovered');
-    }
-
-    const jwks = createRemoteJWKSet(new URL(authorizationServer.jwks_uri));
-
-    await jwtVerify(accessToken, jwks, {
+    const { payload: claims } = await jwtVerify(accessToken, jwks, {
       issuer: getEnv('ISSUER'),
       audience: getEnv('CLIENT_ID'),
     });
+
+    console.log('claims', claims);
+
     return true;
   } catch (e) {
     console.error('JWT verification failed', e);
@@ -40,13 +41,15 @@ export async function authorize({
   redirectUri,
   ip,
   postAuthorizationRedirectUri,
+  scopes,
 }: {
   client: Client;
   redirectUri: string;
   ip: string;
   postAuthorizationRedirectUri?: string;
+  scopes: string[];
 }) {
-  const authorizationServer = await discover();
+  const { authorizationServer } = await discover();
 
   if (!authorizationServer.authorization_endpoint) {
     throw new Error('No uthorization endpoint discovered');
@@ -65,10 +68,7 @@ export async function authorize({
   authorizationUrl.searchParams.set('code_challenge_method', 'S256');
   authorizationUrl.searchParams.set('redirect_uri', redirectUri);
   authorizationUrl.searchParams.set('response_type', 'code');
-  authorizationUrl.searchParams.set(
-    'scope',
-    `openid profile email ${getEnv('CLIENT_SCOPE')}`
-  );
+  authorizationUrl.searchParams.set('scope', scopes.join(' '));
   authorizationUrl.searchParams.set('state', state);
   authorizationUrl.searchParams.set('nonce', nonce);
 

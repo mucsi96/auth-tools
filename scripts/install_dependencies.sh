@@ -18,17 +18,21 @@ pip install -r requirements.txt
 (cd agent && npm install)
 (cd client_lib && npm install)
 
-identity_provider_client_id=$(az keyvault secret show --vault-name p02 --name identity-provider-client-id --query value -o tsv)
-identity_provider_client_secret=$(az keyvault secret show --vault-name p02 --name identity-provider-client-secret --query value -o tsv)
-identity_provider_client_scope=$(az keyvault secret show --vault-name p02 --name identity-provider-client-scope --query value -o tsv)
-identity_provider_issuer=$(az keyvault secret show --vault-name p02 --name identity-provider-issuer --query value -o tsv)
+token_agent_client_id=$(az keyvault secret show --vault-name p02 --name token-agent-client-id --query value -o tsv)
+token_agent_client_secret=$(az keyvault secret show --vault-name p02 --name token-agent-client-secret --query value -o tsv)
+token_agent_issuer=$(az keyvault secret show --vault-name p02 --name token-agent-issuer --query value -o tsv)
+demo_api_client_id=$(az keyvault secret show --vault-name p02 --name demo-api-client-id --query value -o tsv)
+traefik_client_id=$(az keyvault secret show --vault-name p02 --name traefik-client-id --query value -o tsv)
 test_user_email=$(az keyvault secret show --vault-name p02 --name test-user-email --query value -o tsv)
 test_user_password=$(az keyvault secret show --vault-name p02 --name test-user-password --query value -o tsv)
 
-echo "ISSUER=$identity_provider_issuer" > .env
-echo "CLIENT_ID=$identity_provider_client_id" >> .env
-echo "CLIENT_SECRET=$identity_provider_client_secret" >> .env
-echo "CLIENT_SCOPE=$identity_provider_client_scope" >> .env
+echo "ISSUER=$token_agent_issuer" > .env
+echo "CLIENT_ID=$token_agent_client_id" >> .env
+echo "CLIENT_SECRET=$token_agent_client_secret" >> .env
+echo "CLIENT_SCOPE=$token_agent_client_scope" >> .env
+echo "DEMO_API_CLIENT_ID=$demo_api_client_id" >> .env
+echo "VITE_DEMO_API_CLIENT_ID=$demo_api_client_id" >> .env
+echo "TRAEFIK_CLIENT_ID=$traefik_client_id" >> .env
 echo "BASE_PATH=" >> .env
 echo "PUBLIC_URL=http://localhost:8080" >> .env
 echo "COOKIE_DOMAIN=localhost" >> .env

@@ -10,5 +10,6 @@ docker compose version
 if [[ -n "$CI" ]]; then
   docker compose up --detach --wait
 else
+  source .env
   docker compose up --detach --build --force-recreate --wait --remove-orphans --pull always
 fi

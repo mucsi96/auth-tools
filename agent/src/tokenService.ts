@@ -1,3 +1,4 @@
+import { decodeJwt } from 'jose';
 import {
   Client,
   WWWAuthenticateChallenge,
@@ -9,7 +10,6 @@ import {
 } from 'oauth4webapi';
 import { discover } from './discoveryService.js';
 import { getPendingAuthorization } from './pendingAuthorizations.js';
-import { getEnv } from './utils.js';
 
 export async function getToken({
   client,
@@ -20,7 +20,7 @@ export async function getToken({
   callbackUrl: string;
   redirectUri: string;
 }) {
-  const authorizationServer = await discover();
+  const { authorizationServer } = await discover();
   const callbackUrlObj = new URL(callbackUrl);
 
   const { state, codeVerifier, nonce, postAuthorizationRedirectUri } =
@@ -59,7 +59,7 @@ export async function getToken({
     authorizationServer!,
     client,
     response,
-    nonce,
+    nonce
   );
 
   if (isOAuth2Error(tokenResponse)) {
@@ -67,11 +67,19 @@ export async function getToken({
     throw new Error('OAuth 2.0 response body error');
   }
 
+  const { name, email, roles, preferred_username } = await decodeJwt<{
+    name: string;
+    email: string;
+    roles: string[];
+    preferred_username: string;
+  }>(tokenResponse.access_token);
+
   return {
     accessToken: tokenResponse.access_token,
     idToken: tokenResponse.id_token,
     expiresIn: tokenResponse.expires_in,
     refreshToken: tokenResponse.refresh_token,
     postAuthorizationRedirectUri,
+    claims: { name, email, roles, preferred_username },
   };
 }
