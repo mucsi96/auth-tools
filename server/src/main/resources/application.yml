@@ -1,0 +1,9 @@
+server:
+  forward-headers-strategy: framework
+  shutdown: graceful
+management:
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true

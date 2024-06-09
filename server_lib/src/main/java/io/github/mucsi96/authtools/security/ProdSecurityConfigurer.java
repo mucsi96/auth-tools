@@ -1,6 +1,7 @@
 package io.github.mucsi96.authtools.security;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -16,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Profile("prod")
 public class ProdSecurityConfigurer extends SecurityConfigurer {
-    private final UserInfoOpaqueTokenIntrospector infoOpaqueTokenIntrospector;
 
     @Override
     public void init(HttpSecurity http) throws Exception {
@@ -32,7 +32,7 @@ public class ProdSecurityConfigurer extends SecurityConfigurer {
                         .bearerTokenResolver(bearerTokenResolver())
                         .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                         .accessDeniedHandler(new RestAccessDeniedHandler())
-                        .opaqueToken(configurer -> configurer.introspector(infoOpaqueTokenIntrospector)));
+                        .jwt(Customizer.withDefaults()));
     }
 
     BearerTokenResolver bearerTokenResolver() {

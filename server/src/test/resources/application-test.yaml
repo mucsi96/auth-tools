@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+management:
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+kubetools:
+  introspection-uri: /
+  user-info-uri: /
+  client-id: clientId
+  client-secret: clientSecret

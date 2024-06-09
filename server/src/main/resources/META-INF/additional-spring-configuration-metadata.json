@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "app.message",
+      "type": "java.lang.String",
+      "description": "Application message"
+    }
+  ]
+}
