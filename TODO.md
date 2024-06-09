@@ -1,6 +1,4 @@
 - Add server
 - Improve design
 - Add publishing
-- Hoist dockerfiles to root
 - Add e2e tests
-- Refresh access token
