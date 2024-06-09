@@ -25,7 +25,11 @@ function renderUserInfo(element: HTMLElement) {
       );
   } else {
     element.innerHTML = `<button bt>Sign in</button>`;
-    element.querySelector('button')?.addEventListener('click', () => signin());
+    element
+      .querySelector('button')
+      ?.addEventListener('click', () =>
+        signin()
+      );
   }
 }
 

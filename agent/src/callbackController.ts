@@ -11,20 +11,27 @@ export async function handleCallback(
   req: IncomingMessage,
   res: ServerResponse
 ) {
-  const { accessToken, expiresIn, postAuthorizationRedirectUri, claims } =
-    await tokenService.getToken({
-      client,
-      callbackUrl: `${getEnv('PUBLIC_URL')}${req.url}`,
-      redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
-    });
+  const {
+    namespace,
+    accessToken,
+    expiresIn,
+    postAuthorizationRedirectUri,
+    claims,
+  } = await tokenService.getToken({
+    client,
+    callbackUrl: `${getEnv('PUBLIC_URL')}${req.url}`,
+    redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
+  });
 
-  assert(expiresIn, 'Access token already expired');
+  assert(namespace, 'Missing namespace');
+  assert(accessToken, 'Missing access token');
+  assert(expiresIn, 'Missing expires in');
   // assert(refreshToken, 'Refresh token is not returned');
   assert(postAuthorizationRedirectUri, 'Missing postAuthorizationRedirectUri');
 
   res.writeHead(302, {
     Location: postAuthorizationRedirectUri,
-    ...createCookieHeader([
+    ...createCookieHeader(namespace, [
       {
         name: 'accessToken',
         value: accessToken,

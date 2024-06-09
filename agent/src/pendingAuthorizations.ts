@@ -1,4 +1,7 @@
+import { AuthorizationError } from "./authorizationError.js";
+
 export type PendingAuthorization = {
+  namespace: string;
   ip: string;
   codeVerifier: string;
   nonce: string;
@@ -21,7 +24,7 @@ export function addPendingAuthorization(
       );
     })
   ) {
-    throw new Error('Rate limit reached for pending authorizations');
+    throw new AuthorizationError('Rate limit reached for pending authorizations');
   }
 
   pendingAuthizations.push(pendingAuthorization);

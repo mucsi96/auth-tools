@@ -1,3 +1,4 @@
+import { jwtVerify } from 'jose';
 import {
   Client,
   calculatePKCECodeChallenge,
@@ -7,8 +8,6 @@ import {
 } from 'oauth4webapi';
 import { discover } from './discoveryService.js';
 import { addPendingAuthorization } from './pendingAuthorizations.js';
-import { jwtVerify, createRemoteJWKSet } from 'jose';
-import { getEnv } from './utils.js';
 
 export async function isAuthorized({
   accessToken,
@@ -22,14 +21,15 @@ export async function isAuthorized({
   try {
     const { jwks } = await discover();
 
-    const { payload: claims } = await jwtVerify(accessToken, jwks, {
-      issuer: getEnv('ISSUER'),
-      audience: getEnv('CLIENT_ID'),
-    });
+    const { payload: claims } = await jwtVerify<{
+      roles: string[];
+      scp: string;
+    }>(accessToken, jwks);
 
-    console.log('claims', claims);
-
-    return true;
+    return (
+      requiredRoles.every((role) => claims.roles?.includes(role)) &&
+      requiredScopes.every((scope) => claims.scp?.split(' ').includes(scope))
+    );
   } catch (e) {
     console.error('JWT verification failed', e);
     return false;
@@ -37,12 +37,14 @@ export async function isAuthorized({
 }
 
 export async function authorize({
+  namespace,
   client,
   redirectUri,
   ip,
   postAuthorizationRedirectUri,
   scopes,
 }: {
+  namespace: string;
   client: Client;
   redirectUri: string;
   ip: string;
@@ -68,11 +70,15 @@ export async function authorize({
   authorizationUrl.searchParams.set('code_challenge_method', 'S256');
   authorizationUrl.searchParams.set('redirect_uri', redirectUri);
   authorizationUrl.searchParams.set('response_type', 'code');
-  authorizationUrl.searchParams.set('scope', scopes.join(' '));
+  authorizationUrl.searchParams.set(
+    'scope',
+    ['openid', 'profile', ...scopes].join(' ')
+  );
   authorizationUrl.searchParams.set('state', state);
   authorizationUrl.searchParams.set('nonce', nonce);
 
   addPendingAuthorization({
+    namespace,
     codeVerifier,
     nonce,
     state,

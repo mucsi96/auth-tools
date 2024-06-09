@@ -23,7 +23,7 @@ export async function getToken({
   const { authorizationServer } = await discover();
   const callbackUrlObj = new URL(callbackUrl);
 
-  const { state, codeVerifier, nonce, postAuthorizationRedirectUri } =
+  const { namespace, state, codeVerifier, nonce, postAuthorizationRedirectUri } =
     getPendingAuthorization(callbackUrlObj.searchParams.get('state'));
 
   const params = validateAuthResponse(
@@ -75,6 +75,7 @@ export async function getToken({
   }>(tokenResponse.access_token);
 
   return {
+    namespace,
     accessToken: tokenResponse.access_token,
     idToken: tokenResponse.id_token,
     expiresIn: tokenResponse.expires_in,

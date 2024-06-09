@@ -63,6 +63,7 @@ export function returnError(
 }
 
 export function createCookieHeader(
+  namespace: string,
   cookies: {
     name: string;
     value?: string;
@@ -83,7 +84,7 @@ export function createCookieHeader(
           `Max-Age=${maxAge}`,
         ].filter(Boolean);
 
-        return `${name}=${
+        return `${namespace}.${name}=${
           value ? encodeURIComponent(value) : ''
         }; ${cookieOptions.join('; ')}`;
       })
@@ -91,11 +92,18 @@ export function createCookieHeader(
   };
 }
 
-export function parseCookieString<T>(cookieString?: string): T {
+export function parseCookieString<T>(
+  namespace: string,
+  cookieString?: string
+): T {
   if (!cookieString) return {} as T;
 
   return cookieString.split(`;`).reduce((acc, cookie) => {
-    const [name, value] = cookie.split(`=`);
+    const [nameWithNamespace, value] = cookie.split('=');
+    const [ns, name] = nameWithNamespace.split('.');
+
+    if (ns.trim() !== namespace) return acc;
+
     try {
       return {
         ...acc,

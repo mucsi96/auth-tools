@@ -5,6 +5,7 @@ import { logout } from './logoutController.js';
 import { handleCallback } from './callbackController.js';
 import { getClientConfig } from './clientConfig.js';
 import { AssertionError } from 'assert';
+import { AuthorizationError } from './authorizationError.js';
 
 const PORT = process.env.PORT || 8080;
 const BASE_PATH = getEnv('BASE_PATH');
@@ -52,6 +53,12 @@ const server = http.createServer(
 
       if (e instanceof AssertionError) {
         return returnError(req, res, 400, e.message);
+      }
+
+      if (e instanceof AuthorizationError) {
+        res.writeHead(403);
+        res.end('Access denied');
+        return
       }
 
       return returnError(req, res, 500, 'Something went wrong');

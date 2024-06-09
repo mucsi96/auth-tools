@@ -4,7 +4,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.web.loadbalancer.server.port=80"
-      - "traefik.http.middlewares.auth.forwardauth.address=http://agent:8080/authorize"
+      - "traefik.http.middlewares.auth.forwardauth.address=http://agent:8080/authorize?namespace=traefik&scopes=${TRAEFIK_CLIENT_ID}/dashboard-access&requiredRoles=Dashboard.Viewer"
       - "traefik.http.middlewares.auth.forwardauth.addAuthCookiesToResponse=accessToken,refreshToken,idToken"
       - "traefik.http.routers.web.entrypoints=websecure"
       - "traefik.http.routers.web.rule=Host(`web.auth-tools.home`)"
@@ -15,6 +15,7 @@ services:
       dockerfile: client.dockerfile
       args:
         - DEMO_API_CLIENT_ID=$DEMO_API_CLIENT_ID
+        - TRAEFIK_CLIENT_ID=$TRAEFIK_CLIENT_ID
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.spa.loadbalancer.server.port=3000"
@@ -22,11 +23,13 @@ services:
       - "traefik.http.routers.spa.rule=Host(`spa.auth-tools.home`)"
       - "traefik.http.routers.spa.tls=true"
   agent:
-    env_file:
-      - .env
     environment:
+      - BASE_PATH=
       - PUBLIC_URL=https://auth.auth-tools.home
       - COOKIE_DOMAIN=auth-tools.home
+      - ISSUER=$ISSUER
+      - CLIENT_ID=$CLIENT_ID
+      - CLIENT_SECRET=$CLIENT_SECRET
     build:
       context: ./agent
       dockerfile: Dockerfile

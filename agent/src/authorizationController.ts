@@ -4,6 +4,7 @@ import assert from 'assert';
 import { IncomingMessage, ServerResponse } from 'http';
 import { Client } from 'oauth4webapi';
 import { getEnv, getQueryParams, parseCookieString } from './utils.js';
+import { AuthorizationError } from './authorizationError.js';
 
 export async function authorize(
   client: Client,
@@ -11,33 +12,43 @@ export async function authorize(
   res: ServerResponse
 ) {
   let ip = req.socket.remoteAddress;
-  let { postAuthorizationRedirectUri, scopes, requiredRoles } = getQueryParams<{
-    postAuthorizationRedirectUri?: string;
-    scopes: string | string[];
-    requiredRoles?: string | string[];
-  }>(req);
+  let { postAuthorizationRedirectUri, scopes, requiredRoles, namespace } =
+    getQueryParams<{
+      namespace: string;
+      postAuthorizationRedirectUri?: string;
+      scopes: string | string[];
+      requiredRoles?: string | string[];
+    }>(req);
+
+  assert(namespace, 'Missing namespace');
+  assert(scopes, 'Missing scopes');
 
   if (!postAuthorizationRedirectUri) {
     const { accessToken } = parseCookieString<{
       accessToken: string;
-    }>(req.headers.cookie);
+    }>(namespace, req.headers.cookie);
 
     if (
-      await authorizeService.isAuthorized({
+      accessToken &&
+      (await authorizeService.isAuthorized({
         accessToken,
-        requiredScopes: Array.isArray(scopes) ? scopes : [scopes],
+        requiredScopes: (Array.isArray(scopes) ? scopes : [scopes]).map(
+          (scope) => scope.split('/')[1] as string
+        ),
         requiredRoles:
           requiredRoles && Array.isArray(requiredRoles)
             ? requiredRoles
             : requiredRoles
             ? [requiredRoles]
             : [],
-      })
+      }))
     ) {
       res.writeHead(200);
       res.write('Authorized');
       res.end();
       return;
+    } else if (accessToken) {
+      throw new AuthorizationError('Unauthorized');
     }
 
     const proto = req.headers['x-forwarded-proto'];
@@ -55,6 +66,7 @@ export async function authorize(
   assert(ip, 'Missing ip address');
 
   const { authorizationUrl } = await authorizeService.authorize({
+    namespace,
     client,
     redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
     postAuthorizationRedirectUri,

@@ -29,7 +29,6 @@ test_user_password=$(az keyvault secret show --vault-name p02 --name test-user-p
 echo "ISSUER=$token_agent_issuer" > .env
 echo "CLIENT_ID=$token_agent_client_id" >> .env
 echo "CLIENT_SECRET=$token_agent_client_secret" >> .env
-echo "CLIENT_SCOPE=$token_agent_client_scope" >> .env
 echo "DEMO_API_CLIENT_ID=$demo_api_client_id" >> .env
 echo "VITE_DEMO_API_CLIENT_ID=$demo_api_client_id" >> .env
 echo "TRAEFIK_CLIENT_ID=$traefik_client_id" >> .env

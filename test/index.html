@@ -13,16 +13,22 @@
       margin: 0;
     }
   </style>
+  <script src="/dist/env.js"></script>
   <script type="module">
-    import { init, signin, assertRole, hasRole } from "/dist/index.mjs";
+    import { init, assertRole, hasRole } from "/dist/index.mjs";
 
     init({
+      namespace: "demo",
       tokenAgent: "https://auth.auth-tools.home",
       postAuthorizationRedirectUri: "/",
       navigateToSignin: () => {
         history.pushState(null, "", "/login");
         route();
       },
+      scopes: [
+        `${window.demoApiClientId}/read`,
+        `${window.demoApiClientId}/write`,
+      ],
     });
 
     function route() {
@@ -44,15 +50,17 @@
             <ul>
               <li><a href="/" bt-active>Home</a></li>
               ${hasRole("Writer") ? '<li><a href="/admin">Admin</a></li>' : ""}
-              <li><a href="/about">About</a></li>
+              <li><a href="https://web.auth-tools.home">About</a></li>
             </ul>
             <section bt-user-info></section>
             <button bt-navbar-toggler popovertarget="navbar-popover"></button>
             <div popover bt id="navbar-popover">
               <ul bt-dropdown-menu>
                 <li><a href="/" bt-active>Home</a></li>
-                ${hasRole("Writer") ? '<li><a href="/admin">Admin</a></li>' : ""}
-                <li><a href="/about">About</a></li>
+                ${
+                  hasRole("Writer") ? '<li><a href="/admin">Admin</a></li>' : ""
+                }
+                <li><a href="https://web.auth-tools.home">About</a></li>
               </ul>
             </div>
           </nav>
