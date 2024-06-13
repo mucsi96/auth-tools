@@ -41,6 +41,8 @@ export async function authorize(
             : requiredRoles
             ? [requiredRoles]
             : [],
+
+        audience: (Array.isArray(scopes) ? scopes[0] : scopes).split('/')[0],
       }))
     ) {
       res.writeHead(200);

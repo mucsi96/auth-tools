@@ -17,10 +17,10 @@ export async function discover() {
     };
   }
 
-  const issuer = new URL(getEnv('ISSUER'));
+  const oidcBaseUrl = new URL(`https://login.microsoftonline.com/${getEnv('TENANT_ID')}/v2.0`);
   authorizationServer = await processDiscoveryResponse(
-    issuer,
-    await discoveryRequest(issuer)
+    oidcBaseUrl,
+    await discoveryRequest(oidcBaseUrl)
   );
 
   if (!authorizationServer.jwks_uri) {

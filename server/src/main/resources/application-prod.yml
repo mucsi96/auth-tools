@@ -10,7 +10,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${ISSUER}
+          issuer-uri: https://sts.windows.net/${TENANT_ID}/
   boot:
     admin:
       client:
@@ -20,3 +20,5 @@ spring:
           service-base-url: http://${K8S_POD_IP}:8080
           management-base-url: http://${K8S_POD_IP}:${SPRING_ACTUATOR_PORT}
         auto-deregistration: true
+authtools:
+  cookie-namespace: ${COOKIE_NAMESPACE}

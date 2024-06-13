@@ -11,6 +11,7 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {},
+      external: ["@mucsi96/ui-elements", "jwt-decode"],
     },
   },
   plugins: [dts({})],

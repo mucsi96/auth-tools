@@ -1,0 +1,6 @@
+body {
+  background-color: var(--bt-background-color);
+  color: var(--bt-text-color);
+  font-family: var(--bt-font-family);
+  margin: 0;
+}

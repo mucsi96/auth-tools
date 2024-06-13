@@ -8,15 +8,18 @@ import {
 } from 'oauth4webapi';
 import { discover } from './discoveryService.js';
 import { addPendingAuthorization } from './pendingAuthorizations.js';
+import { getEnv } from './utils.js';
 
 export async function isAuthorized({
   accessToken,
   requiredScopes,
   requiredRoles,
+  audience,
 }: {
   accessToken: string;
   requiredScopes: string[];
   requiredRoles: string[];
+  audience: string;
 }): Promise<boolean> {
   try {
     const { jwks } = await discover();
@@ -24,7 +27,10 @@ export async function isAuthorized({
     const { payload: claims } = await jwtVerify<{
       roles: string[];
       scp: string;
-    }>(accessToken, jwks);
+    }>(accessToken, jwks, {
+      issuer: `https://sts.windows.net/${getEnv('TENANT_ID')}/`,
+      audience,
+    });
 
     return (
       requiredRoles.every((role) => claims.roles?.includes(role)) &&

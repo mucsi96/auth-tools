@@ -4,3 +4,5 @@ management:
       show-details: always
       probes:
         enabled: true
+authtools:
+  cookie-namespace: demo

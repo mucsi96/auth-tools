@@ -1,19 +1,7 @@
 {
   "properties": [
     {
-      "name": "authtools.introspection-uri",
-      "type": "java.lang.String"
-    },
-    {
-      "name": "authtools.user-info-uri",
-      "type": "java.lang.String"
-    },
-    {
-      "name": "authtools.client-id",
-      "type": "java.lang.String"
-    },
-    {
-      "name": "authtools.client-secret",
+      "name": "authtools.cookie-namespace",
       "type": "java.lang.String"
     }
   ]

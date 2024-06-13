@@ -1,4 +1,4 @@
-- Add server
-- Improve design
 - Add publishing
 - Add e2e tests
+- Fix double notifications in SPA
+- Adjust Local and test security configurer to use AzureAuthenticationPrincipal
