@@ -13,13 +13,15 @@ const BASE_PATH = getEnv('BASE_PATH');
 const server = http.createServer(
   async (req: IncomingMessage, res: ServerResponse) => {
     try {
-      if (req.url === '/health' && req.method === 'GET') {
+      const pathname = req.url?.split('?')[0];
+
+      if (pathname === '/health' && req.method === 'GET') {
         res.writeHead(200);
         res.end('Health check passed!');
         return;
       }
 
-      console.log(req.method, req.url);
+      console.log(req.method, pathname);
 
       const client = getClientConfig();
 
@@ -29,21 +31,15 @@ const server = http.createServer(
         return;
       }
 
-      if (
-        req.url?.startsWith(BASE_PATH + '/authorize') &&
-        req.method === 'GET'
-      ) {
+      if (pathname === BASE_PATH + '/authorize' && req.method === 'GET') {
         return await authorize(client, req, res);
       }
 
-      if (
-        req.url?.startsWith(BASE_PATH + '/callback') &&
-        req.method === 'GET'
-      ) {
+      if (pathname === BASE_PATH + '/callback' && req.method === 'GET') {
         return await handleCallback(client, req, res);
       }
 
-      if (req.url === BASE_PATH + '/logout' && req.method === 'POST') {
+      if (pathname === BASE_PATH + '/logout' && req.method === 'POST') {
         return await logout(req, res);
       }
 
@@ -58,7 +54,7 @@ const server = http.createServer(
       if (e instanceof AuthorizationError) {
         res.writeHead(403);
         res.end('Access denied');
-        return
+        return;
       }
 
       return returnError(req, res, 500, 'Something went wrong');

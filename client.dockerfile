@@ -14,14 +14,14 @@ COPY client_lib/package.json client_lib/package-lock.json ./
 RUN npm ci
 COPY client_lib ./
 RUN npm run build
-RUN npm link
+RUN npm pack
 
 WORKDIR /app/client
 
 COPY client/package.json client/package-lock.json ./
 RUN npm ci
-RUN npm link @mucsi96/auth-tools
 COPY client ./
+RUN npm install /app/client_lib/mucsi96-auth-tools-1.0.0.tgz
 RUN npm run build
 
 EXPOSE 3000

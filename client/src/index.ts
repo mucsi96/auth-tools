@@ -106,10 +106,10 @@ async function render() {
                 <p>Name: ${user.name}</p>
                 <p>Email: ${user.email}</p>
                 <p>Authorities: ${user.authorities.join(', ')}</p>
+                <button bt id="change">Change</button>
               `
               : ''
           }
-          <button bt id="change">Change</button>
           <section bt-notifications></section>
         </main>
       `;

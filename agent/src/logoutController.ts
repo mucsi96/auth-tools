@@ -21,7 +21,7 @@ export async function logout(req: IncomingMessage, res: ServerResponse) {
     ...createCorsHeaders(req),
     'Content-Type': 'application/json',
     ...createCookieHeader(namespace, [
-      { name: 'idToken', maxAge: 0 },
+      { name: 'tokenClaims', maxAge: 0 },
       { name: 'accessToken', maxAge: 0, httpOnly: true },
       // { name: 'refreshToken', maxAge: 0, httpOnly: true },
     ]),
