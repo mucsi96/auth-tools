@@ -6,3 +6,6 @@ management:
         enabled: true
 authtools:
   cookie-namespace: demo
+  mockAuthorities:
+    - ROLE_user
+    - SCOPE_api

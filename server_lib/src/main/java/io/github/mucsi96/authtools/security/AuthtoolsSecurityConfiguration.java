@@ -1,5 +1,7 @@
 package io.github.mucsi96.authtools.security;
 
+import java.util.List;
+
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +23,7 @@ import lombok.Data;
 @EnableMethodSecurity(jsr250Enabled = true)
 public class AuthtoolsSecurityConfiguration {
   private String cookieNamespace;
+  private List<String> mockAuthorities;
 
   @Bean
   @Order(Ordered.HIGHEST_PRECEDENCE)

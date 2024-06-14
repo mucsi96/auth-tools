@@ -1,8 +1,6 @@
 package io.github.mucsi96.authtools.security;
 
-import java.time.Instant;
 import java.util.Collection;
-import java.util.Map;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,21 +11,23 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType;
-import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
+import io.github.mucsi96.authtools.azure.AzureAuthenticationPrincipal;
+import io.github.mucsi96.authtools.azure.AzureAuthenticationToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Component
 @Profile("local")
 public class LocalSecurityConfigurer extends SecurityConfigurer {
+    private final AuthtoolsSecurityConfiguration configuration;
 
     @Override
     public void init(HttpSecurity http) throws Exception {
@@ -48,13 +48,19 @@ public class LocalSecurityConfigurer extends SecurityConfigurer {
             super((AuthenticationManager) authentication -> {
                 return authentication;
             }, (AuthenticationConverter) request -> {
-                Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_user");
-                DefaultOAuth2AuthenticatedPrincipal principal = new DefaultOAuth2AuthenticatedPrincipal("rob",
-                        Map.of("name", "Robert White", "email", "robert.white@mockemail.com"), authorities);
+                Collection<GrantedAuthority> authorities = AuthorityUtils
+                        .createAuthorityList(configuration.getMockAuthorities());
+                var jwt = Jwt
+                        .withTokenValue("test-token")
+                        .subject("rob")
+                        .header("alg", "none")
+                        .build();
+                var principal = AzureAuthenticationPrincipal.builder()
+                        .name("Robert White")
+                        .email("robert.white@mockemail.com")
+                        .build();
 
-                return new BearerTokenAuthentication(principal,
-                        new OAuth2AccessToken(TokenType.BEARER, "mock-token", Instant.now(), Instant.now()),
-                        authorities);
+                return new AzureAuthenticationToken(jwt, principal, authorities);
             });
 
             this.setSuccessHandler((HttpServletRequest request, HttpServletResponse response,

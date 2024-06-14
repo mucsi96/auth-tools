@@ -6,3 +6,4 @@
 - [Understanding OAuth Scopes And Roles In Azure AD](https://cloudfirstapproach.com/understanding-oauth-scopes-and-roles-in-azure-ad/)
 - [Overview of permissions and consent in the Microsoft identity platform](https://learn.microsoft.com/en-us/entra/identity-platform/permissions-consent-overview)
 - [Understanding the concepts of access control [The Confused Developer]](https://www.youtube.com/watch?v=vULfBEn8N7E&t=1s)
+- [Spring Boot Testing Signed JWT with a mock Authorization Server](https://chancharles.medium.com/spring-boot-testing-signed-jwt-with-a-mock-authorization-server-f2907ec07175)

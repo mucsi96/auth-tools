@@ -1,4 +1,4 @@
-package io.github.mucsi96.authtools;
+package io.github.mucsi96.demo;
 
 import java.util.List;
 

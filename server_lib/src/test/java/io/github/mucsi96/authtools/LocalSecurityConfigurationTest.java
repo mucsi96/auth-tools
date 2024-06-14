@@ -14,6 +14,7 @@ import com.jayway.jsonpath.JsonPath;
 @ActiveProfiles("local")
 public class LocalSecurityConfigurationTest extends BaseIntegrationTest {
 
+
         @Test
         public void returns_logged_in_user_details() throws Exception {
                 MockHttpServletResponse response = mockMvc.perform(

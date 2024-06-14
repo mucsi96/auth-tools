@@ -14,7 +14,7 @@ import com.jayway.jsonpath.JsonPath;
 public class TestSecurityConfigurationTest extends BaseIntegrationTest {
 
         @Test
-        @WithMockUserRoles("user")
+        @WithMockUserAuthorities({ "ROLE_user", "SCOPE_api" })
         public void returns_logged_in_user_details() throws Exception {
                 MockHttpServletResponse response = mockMvc.perform(
                                 get("/me"))
@@ -27,7 +27,7 @@ public class TestSecurityConfigurationTest extends BaseIntegrationTest {
         }
 
         @Test
-        @WithMockUserRoles("guest")
+        @WithMockUserAuthorities({ "ROLE_guest", "SCOPE_api" })
         public void returns_forbidden_if_user_has_no_user_authority() throws Exception {
                 MockHttpServletResponse response = mockMvc.perform(
                                 get("/admin"))

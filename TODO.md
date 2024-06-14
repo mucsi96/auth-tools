@@ -1,4 +1,2 @@
 - Add publishing
 - Add e2e tests
-- Adjust Local and test security configurer to use AzureAuthenticationPrincipal
-- Update server lib and server tests

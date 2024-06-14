@@ -12,8 +12,8 @@ management:
       show-details: always
       probes:
         enabled: true
-kubetools:
-  introspection-uri: /
-  user-info-uri: /
-  client-id: clientId
-  client-secret: clientSecret
+authtools:
+  cookie-namespace: demo
+  mockAuthorities:
+    - ROLE_user
+    - SCOPE_api
