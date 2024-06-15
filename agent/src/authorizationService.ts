@@ -28,7 +28,7 @@ export async function isAuthorized({
       roles: string[];
       scp: string;
     }>(accessToken, jwks, {
-      issuer: `https://sts.windows.net/${getEnv('TENANT_ID')}/`,
+      issuer: `${getEnv('ISSUER_URL')}/${getEnv('TENANT_ID')}/`,
       audience,
     });
 

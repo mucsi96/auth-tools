@@ -70,3 +70,12 @@ services:
       - "traefik.http.routers.traefik.rule=Host(`dashboard.auth-tools.home`)"
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.routers.traefik.tls=true"
+  mock_identity_provider:
+    build:
+      context: ./mock_identity_provider
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.agent.loadbalancer.server.port=8080"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.rule=Host(`idp.auth-tools.home`)"
+      - "traefik.http.routers.traefik.tls=true"
