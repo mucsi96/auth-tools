@@ -27,9 +27,7 @@ traefik_client_id=$(az keyvault secret show --vault-name p02 --name traefik-clie
 test_user_email=$(az keyvault secret show --vault-name p02 --name test-user-email --query value -o tsv)
 test_user_password=$(az keyvault secret show --vault-name p02 --name test-user-password --query value -o tsv)
 
-echo "IDENTITY_PROVIDER_URL=https://login.microsoftonline.com" > .env
-echo "ISSUER_URL=https://sts.windows.net" > .env
-echo "TENANT_ID=$tenant_id" >> .env
+echo "TENANT_ID=$tenant_id" > .env
 echo "CLIENT_ID=$token_agent_client_id" >> .env
 echo "CLIENT_SECRET=$token_agent_client_secret" >> .env
 echo "DEMO_API_CLIENT_ID=$demo_api_client_id" >> .env

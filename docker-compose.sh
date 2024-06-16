@@ -4,8 +4,11 @@ source .env
 docker compose version
 
 if [[ -n "$MOCK_IDENTITY_PROVIDER" ]]; then
-  export IDENTITY_PROVIDER_URL=http://identity_provider:8080
-  export ISSUER_URL=http://identity_provider:8080
+  export IDENTITY_PROVIDER_URL=http://mock-identity-provider:8080
+  export ISSUER_URL=https://idp.auth-tools.home
+else 
+  export IDENTITY_PROVIDER_URL=https://login.microsoftonline.com
+  export ISSUER_URL=https://sts.windows.net
 fi
 
 if [[ -n "$CI" ]]; then

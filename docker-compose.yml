@@ -39,6 +39,8 @@ services:
       - "traefik.http.routers.api.tls=true"
   agent:
     environment:
+      - IDENTITY_PROVIDER_URL=$IDENTITY_PROVIDER_URL
+      - ISSUER_URL=$ISSUER_URL
       - BASE_PATH=
       - PUBLIC_URL=https://auth.auth-tools.home
       - COOKIE_DOMAIN=auth-tools.home
@@ -66,16 +68,19 @@ services:
       - /etc/certs:/etc/certs
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.rule=Host(`dashboard.auth-tools.home`)"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.tls=true"
-  mock_identity_provider:
+      - "traefik.http.routers.proxy.entrypoints=websecure"
+      - "traefik.http.routers.proxy.rule=Host(`dashboard.auth-tools.home`)"
+      - "traefik.http.routers.proxy.service=api@internal"
+      - "traefik.http.routers.proxy.tls=true"
+  mock-identity-provider:
     build:
       context: ./mock_identity_provider
+    environment:
+      - TENANT_ID=$TENANT_ID
+      - CLIENT_ID=$CLIENT_ID
     labels:
       - "traefik.enable=true"
-      - "traefik.http.services.agent.loadbalancer.server.port=8080"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.rule=Host(`idp.auth-tools.home`)"
-      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.services.mock-identity-provider.loadbalancer.server.port=8080"
+      - "traefik.http.routers.mock-identity-provider.entrypoints=websecure"
+      - "traefik.http.routers.mock-identity-provider.rule=Host(`idp.auth-tools.home`)"
+      - "traefik.http.routers.mock-identity-provider.tls=true"
