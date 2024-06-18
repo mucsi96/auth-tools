@@ -37,7 +37,7 @@ import jakarta.servlet.http.Cookie;
 @DirtiesContext
 public class BaseIntegrationTest {
         private static KeyPair keyPair;
-        private static final String KEY_ID = "dsfasfasdfadsfas";
+        private static final String KEY_ID = "key1";
         private static String jwks;
 
         @Autowired
@@ -60,15 +60,15 @@ public class BaseIntegrationTest {
         }
 
         private static void createJWKS() {
-                var keys = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
+                var jwk = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
                                 .keyID(KEY_ID)
                                 .build()
                                 .toJSONObject().toString();
 
-                jwks = String.format("{\"keys\": [%s]}", keys);
+                jwks = String.format("{\"keys\": [%s]}", jwk);
         }
 
-        Cookie createAcessTokeCookie(JWTClaimsSet claimsSet) throws Exception {
+        Cookie createAccessTokenCookie(JWTClaimsSet claimsSet) throws Exception {
                 var signer = new RSASSASigner(keyPair.getPrivate());
                 var signedJWT = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(KEY_ID).build(),
                                 claimsSet);
@@ -91,7 +91,7 @@ public class BaseIntegrationTest {
         }
 
         Cookie getUserAccessToken() throws Exception {
-                return createAcessTokeCookie(new JWTClaimsSet.Builder()
+                return createAccessTokenCookie(new JWTClaimsSet.Builder()
                                 .subject("user")
                                 .claim("name", "Robert White")
                                 .issuer(mockAuthServer.baseUrl())
@@ -102,7 +102,7 @@ public class BaseIntegrationTest {
         }
 
         Cookie getGuestAccessToken() throws Exception {
-                return createAcessTokeCookie(new JWTClaimsSet.Builder()
+                return createAccessTokenCookie(new JWTClaimsSet.Builder()
                                 .subject("guest")
                                 .claim("name", "Robert White")
                                 .issuer(mockAuthServer.baseUrl())

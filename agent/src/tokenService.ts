@@ -23,8 +23,13 @@ export async function getToken({
   const { authorizationServer } = await discover();
   const callbackUrlObj = new URL(callbackUrl);
 
-  const { namespace, state, codeVerifier, nonce, postAuthorizationRedirectUri } =
-    getPendingAuthorization(callbackUrlObj.searchParams.get('state'));
+  const {
+    namespace,
+    state,
+    codeVerifier,
+    nonce,
+    postAuthorizationRedirectUri,
+  } = getPendingAuthorization(callbackUrlObj.searchParams.get('state'));
 
   const params = validateAuthResponse(
     authorizationServer!,

@@ -17,7 +17,7 @@ export async function discover() {
     };
   }
 
-  const oidcBaseUrl = new URL(`${getEnv('IDENTITY_PROVIDER_URL')}/${getEnv('TENANT_ID')}/v2.0`);
+  const oidcBaseUrl = new URL(getEnv('ISSUER'));
   authorizationServer = await processDiscoveryResponse(
     oidcBaseUrl,
     await discoveryRequest(oidcBaseUrl)

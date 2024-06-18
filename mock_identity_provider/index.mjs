@@ -5,10 +5,9 @@ import { generateKeyPairSync, createPublicKey } from "crypto";
 import jsonwebtoken from "jsonwebtoken";
 import { nanoid } from "nanoid";
 
-const { sign, verify } = jsonwebtoken;
+const { sign, verify, decode } = jsonwebtoken;
 const PORT = 8080;
-const JWT_SECRET = "dsfasfasdfadsfas";
-const ISSUER = `http://mock-identity-provider:8080/${getEnv("TENANT_ID")}/v2.0`;
+const KEY_ID = "key1";
 
 const authentication = {};
 
@@ -18,7 +17,7 @@ const users = {
     sub: "user1",
     name: "User One",
     email: "user1@example.com",
-    roles: ["Reader", "Writer"],
+    roles: ["Reader", "Writer", "Dashboard.Viewer"],
   },
   user2: {
     sub: "user2",
@@ -41,22 +40,39 @@ const { publicKey, privateKey } = generateKeyPairSync("rsa", {
   },
 });
 
-function createToken({ user, audience, scope }) {
+function createAccessToken({ user, audience, scope }) {
   return sign(
     {
       ...user,
       scp: scope
         ?.split(" ")
         .filter((s) => s.includes("/"))
-        .map((s) => s.split("/")[1]),
+        .map((s) => s.split("/")[1])
+        .join(" "),
     },
     privateKey,
     {
       algorithm: "RS256",
-      issuer: ISSUER,
+      issuer: getEnv("ISSUER"),
+      audience,
+      expiresIn: "1h",
+      keyid: KEY_ID,
+    }
+  );
+}
+
+function createIdToken({ user }) {
+  return sign(
+    {
+      ...user,
+    },
+    privateKey,
+    {
+      algorithm: "RS256",
+      issuer: getEnv("ISSUER"),
       audience: getEnv("CLIENT_ID"),
       expiresIn: "1h",
-      keyid: JWT_SECRET,
+      keyid: KEY_ID,
     }
   );
 }
@@ -83,13 +99,13 @@ const server = createServer((req, res) => {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(
       JSON.stringify({
-        issuer: ISSUER,
+        issuer: getEnv("ISSUER"),
         authorization_endpoint: `https://idp.auth-tools.home/${getEnv(
           "TENANT_ID"
         )}/v2.0/authorize`,
-        token_endpoint: `${ISSUER}/token`,
-        userinfo_endpoint: `${ISSUER}/userinfo`,
-        jwks_uri: `${ISSUER}/jwks`,
+        token_endpoint: `${getEnv("ISSUER")}/token`,
+        userinfo_endpoint: `${getEnv("ISSUER")}/userinfo`,
+        jwks_uri: `${getEnv("ISSUER")}/jwks`,
         response_types_supported: ["code", "id_token", "token id_token"],
         subject_types_supported: ["public"],
         id_token_signing_alg_values_supported: ["RS256"],
@@ -154,14 +170,14 @@ const server = createServer((req, res) => {
         .split("/")[0];
       // Simplified: always returning tokens for the same user
       const user = users["user1"];
-      const id_token = createToken({ user: { ...user, nonce }, audience });
-      const access_token = createToken({
+      const id_token = createIdToken({ user: { ...user, nonce } });
+      const access_token = createAccessToken({
         user,
         scope,
         audience,
       });
-      console.log("Access token:", access_token);
-      console.log("ID token:", id_token);
+      console.log("Access token:", decode(access_token));
+      console.log("ID token:", decode(id_token));
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(
         JSON.stringify({
@@ -176,8 +192,8 @@ const server = createServer((req, res) => {
     // Serve the public key in JWKS format
     const jwk = createPublicKey(publicKey).export({ format: "jwk" });
     jwk.use = "sig";
-    jwk.kid = JWT_SECRET;
-    jwk.alg = "RS256";
+    jwk.kid = KEY_ID;
+    jwk.issuer = getEnv("ISSUER");
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ keys: [jwk] }));
   } else {

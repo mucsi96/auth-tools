@@ -28,7 +28,7 @@ export async function isAuthorized({
       roles: string[];
       scp: string;
     }>(accessToken, jwks, {
-      issuer: `${getEnv('ISSUER_URL')}/${getEnv('TENANT_ID')}/`,
+      issuer: getEnv('ISSUER'),
       audience,
     });
 
