@@ -18,6 +18,7 @@ pip install -r requirements.txt
 (cd agent && npm install)
 (cd client_lib && npm install && npm link)
 (cd client && npm install && npm link @mucsi96/auth-tools)
+(cd mock_identity_provider && npm install)
 
 tenant_id=$(az keyvault secret show --vault-name p02 --name tenant-id --query value -o tsv)
 issuer=$(az keyvault secret show --vault-name p02 --name issuer --query value -o tsv)
