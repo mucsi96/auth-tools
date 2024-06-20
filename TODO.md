@@ -1,3 +1,2 @@
 - Add publishing
 - Add e2e tests
-- Add signout support for mock idp

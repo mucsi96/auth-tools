@@ -62,6 +62,7 @@ const server = createServer(
             'TENANT_ID'
           )}/v2.0/authorize`,
           token_endpoint: `${getEnv('ISSUER')}/token`,
+          end_session_endpoint: `${getEnv('ISSUER')}/logout`,
           userinfo_endpoint: `${getEnv('ISSUER')}/userinfo`,
           jwks_uri: `${getEnv('ISSUER')}/jwks`,
           response_types_supported: ['code', 'id_token', 'token id_token'],
@@ -158,6 +159,9 @@ const server = createServer(
           expires_in: 3600,
         })
       );
+    } else if (pathname === `/${getEnv('TENANT_ID')}/v2.0/logout`) {
+      res.writeHead(204, { 'Content-Type': 'text/plain' });
+      res.end();
     } else if (pathname === `/${getEnv('TENANT_ID')}/v2.0/jwks`) {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(createJWKS({ publicKey, keyId: KEY_ID })));
