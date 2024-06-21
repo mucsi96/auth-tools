@@ -39,7 +39,6 @@ services:
       - "traefik.http.routers.api.tls=true"
   agent:
     environment:
-      - IDENTITY_PROVIDER_URL=$IDENTITY_PROVIDER_URL
       - ISSUER=$ISSUER
       - BASE_PATH=
       - PUBLIC_URL=https://auth.auth-tools.home

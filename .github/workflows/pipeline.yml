@@ -36,4 +36,6 @@ jobs:
       - run: pip install -r requirements.txt
       - run: playwright install chromium --with-deps
       - run: ./docker-compose.sh
+        env:
+          MOCK_IDENTITY_PROVIDER: true
       - run: pytest
