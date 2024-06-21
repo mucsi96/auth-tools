@@ -15,6 +15,8 @@ pyenv activate $project
 
 pip install -r requirements.txt
 
+playwright install chromium --with-deps
+
 (cd agent && npm install)
 (cd client_lib && npm install && npm link)
 (cd client && npm install && npm link @mucsi96/auth-tools)

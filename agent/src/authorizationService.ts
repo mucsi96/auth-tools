@@ -46,14 +46,12 @@ export async function authorize({
   namespace,
   client,
   redirectUri,
-  ip,
   postAuthorizationRedirectUri,
   scopes,
 }: {
   namespace: string;
   client: Client;
   redirectUri: string;
-  ip: string;
   postAuthorizationRedirectUri?: string;
   scopes: string[];
 }) {
@@ -88,7 +86,6 @@ export async function authorize({
     codeVerifier,
     nonce,
     state,
-    ip,
     timestamp: Math.floor(Date.now() / 1000),
     postAuthorizationRedirectUri,
   });

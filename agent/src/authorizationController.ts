@@ -2,8 +2,13 @@ import * as authorizeService from './authorizationService.js';
 
 import assert from 'assert';
 import { IncomingMessage, ServerResponse } from 'http';
-import { Client } from 'oauth4webapi';
-import { getEnv, getQueryParams, parseCookieString } from './utils.js';
+import { Client, generateRandomState } from 'oauth4webapi';
+import {
+  createCookieHeader,
+  getEnv,
+  getQueryParams,
+  parseCookieString,
+} from './utils.js';
 import { AuthorizationError } from './authorizationError.js';
 
 export async function authorize(
@@ -11,7 +16,6 @@ export async function authorize(
   req: IncomingMessage,
   res: ServerResponse
 ) {
-  let ip = req.socket.remoteAddress;
   let { postAuthorizationRedirectUri, scopes, requiredRoles, namespace } =
     getQueryParams<{
       namespace: string;
@@ -19,6 +23,10 @@ export async function authorize(
       scopes: string | string[];
       requiredRoles?: string | string[];
     }>(req);
+  const { sessionId } = parseCookieString<{ sessionId?: string }>(
+    namespace,
+    req.headers.cookie
+  );
 
   assert(namespace, 'Missing namespace');
   assert(scopes, 'Missing scopes');
@@ -56,7 +64,6 @@ export async function authorize(
     const proto = req.headers['x-forwarded-proto'];
     const host = req.headers['x-forwarded-host'];
     const uri = req.headers['x-forwarded-uri'];
-    ip = req.headers['x-forwarded-for']?.toString();
 
     assert(proto, 'Missing x-forwarded-proto');
     assert(host, 'Missing x-forwarded-host');
@@ -65,17 +72,29 @@ export async function authorize(
     postAuthorizationRedirectUri = `${proto}://${host}${uri}`;
   }
 
-  assert(ip, 'Missing ip address');
+  if (sessionId) {
+    throw new AuthorizationError(
+      'Rate limit reached for pending authorizations'
+    );
+  }
 
   const { authorizationUrl } = await authorizeService.authorize({
     namespace,
     client,
     redirectUri: `${getEnv('PUBLIC_URL')}/callback`,
     postAuthorizationRedirectUri,
-    ip,
     scopes: Array.isArray(scopes) ? scopes : [scopes],
   });
 
-  res.writeHead(302, { Location: authorizationUrl });
+  res.writeHead(302, {
+    Location: authorizationUrl,
+    ...createCookieHeader(namespace, [
+      {
+        name: 'sessionId',
+        value: generateRandomState(),
+        maxAge: 10,
+      },
+    ]),
+  });
   res.end();
 }

@@ -49,6 +49,22 @@ async function changeUser() {
       method: 'POST',
     });
 
+    if (response.status === 401) {
+      document.dispatchEvent(
+        new ErrorNotificationEvent(
+          'You are not authorized to change user data.'
+        )
+      );
+      return;
+    }
+
+    if (response.status === 403) {
+      document.dispatchEvent(
+        new ErrorNotificationEvent('You are not allowed to change user data.')
+      );
+      return;
+    }
+
     if (!response.ok) {
       throw new Error('Failed to change user data.');
     }
@@ -106,11 +122,11 @@ async function render() {
                 <p>Name: ${user.name}</p>
                 <p>Email: ${user.email}</p>
                 <p>Authorities: ${user.authorities.join(', ')}</p>
-                <button bt id="change">Change</button>
-              `
+                `
               : ''
           }
           <section bt-notifications></section>
+          <button bt id="change">Change</button>
         </main>
       `;
   document.getElementById('change')?.addEventListener('click', changeUser);
