@@ -39,5 +39,11 @@ jobs:
         env:
           MOCK_IDENTITY_PROVIDER: true
       - run: pytest
+      - name: Upload screenshots
+        uses: actions/upload-artifact@4
+        if: failure()
+        with:
+            name: test-results
+            path: test-results
       - run: docker compose logs
         if: always()

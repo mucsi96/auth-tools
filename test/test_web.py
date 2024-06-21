@@ -48,7 +48,7 @@ def test_keeps_user_logged_in_on_reload(page: Page):
     expect(page.get_by_role("heading", name="Login", level=1)).to_be_visible()
     sign_in(page, "user1")
     page.reload()
-    expect(page.get_by_role("heading", name="Hello, World!", level=1)).to_be_visible()
+    expect(page.get_by_role("heading", name="Hello, Worled!", level=1)).to_be_visible()
 
 
 def test_denies_access_to_user_without_permission(page: Page):
