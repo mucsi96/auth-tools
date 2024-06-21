@@ -40,7 +40,7 @@ jobs:
           MOCK_IDENTITY_PROVIDER: true
       - run: pytest
       - name: Upload screenshots
-        uses: actions/upload-artifact@4
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
             name: test-results
