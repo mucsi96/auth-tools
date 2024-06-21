@@ -1,2 +1,2 @@
 - Add publishing
-- Add e2e tests
+- Improve errors for web case. So they are not JSONs
