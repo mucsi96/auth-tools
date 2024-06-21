@@ -55,11 +55,19 @@ export function returnError(
   message: string
 ) {
   console.error(message);
-  res.writeHead(statusCode, {
-    ...createCorsHeaders(req),
-    'Content-Type': 'application/json',
-  });
-  res.end(JSON.stringify({ message }));
+  if (req.headers.accept === 'application/json') {
+    res.writeHead(statusCode, {
+      ...createCorsHeaders(req),
+      'Content-Type': 'application/json',
+    });
+    res.end(JSON.stringify({ message }));
+  } else {
+    res.writeHead(statusCode, {
+      ...createCorsHeaders(req),
+      'Content-Type': 'text/plain',
+    });
+    res.end(message);
+  }
 }
 
 export function createCookieHeader(

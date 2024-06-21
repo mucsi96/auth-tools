@@ -1,2 +1,1 @@
 - Add publishing
-- Improve errors for web case. So they are not JSONs
