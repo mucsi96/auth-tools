@@ -39,3 +39,5 @@ jobs:
         env:
           MOCK_IDENTITY_PROVIDER: true
       - run: pytest
+      - run: docker compose logs
+        if: always()
