@@ -5,10 +5,10 @@ from utils import sign_in
 
 @fixture(scope="session")
 def browser_context_args(browser_context_args):
-    print(browser_context_args)
     return {
         **browser_context_args,
         "ignore_https_errors": True,
+        "record_har_path": "test-results/test.har"
     }
 
 
