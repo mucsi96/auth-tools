@@ -37,6 +37,12 @@ services:
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.rule=Host(`spa.auth-tools.home`) && PathPrefix(`/api`)"
       - "traefik.http.routers.api.tls=true"
+    healthcheck:
+      test: "curl --fail --silent localhost:8082/actuator/health/readiness | grep UP || exit 1"
+      interval: 2s
+      timeout: 3s
+      retries: 5
+      start_period: 2s
   agent:
     environment:
       - ISSUER=$ISSUER

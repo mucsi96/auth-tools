@@ -17,6 +17,8 @@ RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 FROM bellsoft/liberica-openjre-alpine-musl:22
 
+RUN apk --no-cache add bash curl
+
 VOLUME /tmp
 
 ARG DEPENDENCY=/workspace/server/target/dependency
