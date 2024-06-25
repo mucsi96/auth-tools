@@ -70,3 +70,4 @@ jobs:
       - run: npm run build
         working-directory: client_lib
       - run: scripts/publish_client_lib.py ${{ secrets.GITHUB_TOKEN }} ${{ secrets.ANSIBLE_VAULT_KEY }}
+        working-directory: .
