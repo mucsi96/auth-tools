@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
+from logging import root
 from pathlib import Path
 import sys
 from publish_tools import ansible_utils, version_utils, npm_utils
 
-root_directory = Path(__file__).parent.parent
+root_directory = Path(__file__).resolve().parents[1]
 
 print('root_directory', root_directory)
 
