@@ -1,10 +1,15 @@
+#!/usr/bin/env python3
+
 from pathlib import Path
 import sys
 from publish_tools import ansible_utils, version_utils, npm_utils
 
 root_directory = Path(__file__).parent.parent
+
 secrets = ansible_utils.load_vars(sys.argv[2], root_directory / "vars/vault.yaml")
-version = version_utils.get_version(src=root_directory, tag_prefix="client-lib")
+version = version_utils.get_version(
+    src=root_directory / "client_lib", tag_prefix="client-lib"
+)
 
 npm_utils.publish_npm_package(
     src=root_directory / "client_lib",
