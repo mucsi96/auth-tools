@@ -70,3 +70,19 @@ jobs:
       - run: npm run build
         working-directory: client_lib
       - run: scripts/publish_client_lib.py "${{ secrets.GITHUB_TOKEN }}" "${{ secrets.ANSIBLE_VAULT_KEY }}"
+
+  publish-agent:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: test-e2e
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: scripts/publish_agent.py "${{ secrets.GITHUB_TOKEN }}" "${{ secrets.ANSIBLE_VAULT_KEY }}"
