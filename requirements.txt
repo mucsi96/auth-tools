@@ -1,2 +1,2 @@
-mucsi96.publish-tools == 24.0.0
+mucsi96.publish-tools == 32.0.0
 pytest-playwright==0.4.4
