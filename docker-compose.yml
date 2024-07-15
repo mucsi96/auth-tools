@@ -16,6 +16,7 @@ services:
       args:
         - DEMO_API_CLIENT_ID=$DEMO_API_CLIENT_ID
         - TRAEFIK_CLIENT_ID=$TRAEFIK_CLIENT_ID
+        - MOCK_AUTH_SERVICE=$MOCK_AUTH_SERVICE
     labels:
       - "traefik.enable=true"
       - "traefik.http.services.spa.loadbalancer.server.port=3000"

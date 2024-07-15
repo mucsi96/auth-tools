@@ -5,20 +5,6 @@ import {
   SuccessNotificationEvent,
 } from '@mucsi96/ui-elements';
 
-init({
-  namespace: 'demo',
-  tokenAgent: 'https://auth.auth-tools.home',
-  postAuthorizationRedirectUri: '/',
-  navigateToSignin: () => {
-    history.pushState(null, '', '/login');
-    route();
-  },
-  scopes: [
-    `${import.meta.env.VITE_DEMO_API_CLIENT_ID}/read`,
-    `${import.meta.env.VITE_DEMO_API_CLIENT_ID}/write`,
-  ],
-});
-
 type User = {
   id: string;
   name: string;
@@ -132,4 +118,27 @@ async function render() {
   document.getElementById('change')?.addEventListener('click', changeUser);
 }
 
-route();
+document.addEventListener('DOMContentLoaded', async function () {
+  if (import.meta.env.VITE_MOCK_AUTH_SERVICE) {
+    await (await import('./mocks/browser')).startWorker();
+  }
+
+  init({
+    namespace: 'demo',
+    tokenAgent: 'https://auth.auth-tools.home',
+    postAuthorizationRedirectUri: '/',
+    navigateToSignin: () => {
+      history.pushState(null, '', '/login');
+      route();
+    },
+    scopes: [
+      `${import.meta.env.VITE_DEMO_API_CLIENT_ID}/read`,
+      `${import.meta.env.VITE_DEMO_API_CLIENT_ID}/write`,
+    ],
+    environment: import.meta.env.VITE_MOCK_AUTH_SERVICE
+      ? 'development'
+      : 'production',
+  });
+
+  route();
+});
