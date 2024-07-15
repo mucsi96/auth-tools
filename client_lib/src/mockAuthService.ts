@@ -72,6 +72,7 @@ export class MockAuthService implements AuthService {
   }
 
   async signout() {
+    window.sessionStorage.removeItem('mockUserInfo');
     document.dispatchEvent(
       new SuccessNotificationEvent('Successfully signed out')
     );
