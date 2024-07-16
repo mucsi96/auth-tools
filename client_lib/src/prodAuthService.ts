@@ -3,7 +3,7 @@ import {
   SuccessNotificationEvent,
 } from '@mucsi96/ui-elements';
 import { jwtDecode } from 'jwt-decode';
-import { AuthService, Options } from './types';
+import { AuthService, Options, UserInfo } from './types';
 
 export class ProdAuthService implements AuthService {
   private readonly namespace: string;
@@ -41,7 +41,7 @@ export class ProdAuthService implements AuthService {
     this.scopes = options.scopes;
   }
 
-  getUserInfo() {
+  getUserInfo(): UserInfo & { isSignedIn: boolean } {
     const tokenClaims = document.cookie
       .split('; ')
       .find((cookie) => cookie.startsWith(`${this.namespace}.tokenClaims=`))

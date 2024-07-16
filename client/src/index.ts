@@ -135,9 +135,12 @@ document.addEventListener('DOMContentLoaded', async function () {
       `${import.meta.env.VITE_DEMO_API_CLIENT_ID}/read`,
       `${import.meta.env.VITE_DEMO_API_CLIENT_ID}/write`,
     ],
-    environment: import.meta.env.VITE_MOCK_AUTH_SERVICE
-      ? 'development'
-      : 'production',
+    mockUserInfo: import.meta.env.VITE_MOCK_AUTH_SERVICE && {
+      userName: 'Robert White',
+      email: 'robert.white@mockemail.com',
+      initials: 'RW',
+      roles: ['Reader', 'Writer'],
+    },
   });
 
   route();

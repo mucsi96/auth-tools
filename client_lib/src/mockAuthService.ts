@@ -4,6 +4,7 @@ import { AuthService, Options, UserInfo } from './types';
 export class MockAuthService implements AuthService {
   private readonly navigateToSignin: () => void;
   private readonly postAuthorizationRedirectUri: string;
+  private readonly mockUserInfo: UserInfo;
 
   constructor(options: Options) {
     if (!options.namespace) {
@@ -26,21 +27,29 @@ export class MockAuthService implements AuthService {
       throw new Error('Scopes are required');
     }
 
+    if (!options.mockUserInfo) {
+      throw new Error('Mock user info is required');
+    }
+
     this.postAuthorizationRedirectUri =
       location.origin + options.postAuthorizationRedirectUri;
     this.navigateToSignin = options.navigateToSignin;
+    this.mockUserInfo = options.mockUserInfo;
   }
 
-  getUserInfo() {
+  getUserInfo(): UserInfo & { isSignedIn: boolean } {
     const userInfo = window.sessionStorage.getItem('mockUserInfo');
-    
+
     if (userInfo) {
-      return JSON.parse(userInfo);
+      return {
+        isSignedIn: true,
+        ...JSON.parse(userInfo),
+      };
     }
 
     return {
       isSignedIn: false,
-    } satisfies UserInfo;
+    };
   }
 
   hasRole(role: string) {
@@ -58,16 +67,7 @@ export class MockAuthService implements AuthService {
   }
 
   signin() {
-    window.sessionStorage.setItem(
-      'mockUserInfo',
-      JSON.stringify({
-        isSignedIn: true,
-        userName: 'Robert White',
-        email: 'robert.white@mockemail.com',
-        initials: 'RW',
-        roles: ['Reader', 'Writer'],
-      } satisfies UserInfo)
-    );
+    window.sessionStorage.setItem('mockUserInfo', JSON.stringify(this.mockUserInfo));
     location.href = this.postAuthorizationRedirectUri;
   }
 

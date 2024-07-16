@@ -4,11 +4,10 @@ export type Options = {
   postAuthorizationRedirectUri: string;
   navigateToSignin: () => void;
   scopes: string[];
-  environment?: 'development' | 'production';
+  mockUserInfo?: UserInfo;
 };
 
 export type UserInfo = {
-  isSignedIn: boolean;
   userName?: string;
   email?: string;
   initials?: string;
@@ -16,7 +15,7 @@ export type UserInfo = {
 };
 
 export interface AuthService {
-  getUserInfo: () => UserInfo;
+  getUserInfo: () => UserInfo & { isSignedIn: boolean };
   hasRole: (role: string) => boolean;
   assertRole: (role: string) => void;
   signin: () => void;

@@ -4,14 +4,13 @@ import { AuthService, Options } from './types';
 
 let service: AuthService | undefined;
 
-export function init(options: Options) {
-  service =
-    options.environment === 'development'
-      ? new MockAuthService(options)
-      : new ProdAuthService(options);
+export function init(options: Options): void {
+  service = options.mockUserInfo
+    ? new MockAuthService(options)
+    : new ProdAuthService(options);
 }
 
-export function getUserInfo() {
+export function getUserInfo(): ReturnType<AuthService['getUserInfo']> {
   if (!service) {
     throw new Error('Auth tools not initialized');
   }
@@ -19,7 +18,7 @@ export function getUserInfo() {
   return service.getUserInfo();
 }
 
-export function hasRole(role: string) {
+export function hasRole(role: string): ReturnType<AuthService['hasRole']> {
   if (!service) {
     throw new Error('Auth tools not initialized');
   }
@@ -27,7 +26,9 @@ export function hasRole(role: string) {
   return service.hasRole(role);
 }
 
-export function assertRole(role: string) {
+export function assertRole(
+  role: string
+): ReturnType<AuthService['assertRole']> {
   if (!service) {
     throw new Error('Auth tools not initialized');
   }
@@ -35,7 +36,7 @@ export function assertRole(role: string) {
   return service.assertRole(role);
 }
 
-export function signin() {
+export function signin(): ReturnType<AuthService['signin']> {
   if (!service) {
     throw new Error('Auth tools not initialized');
   }
@@ -43,7 +44,7 @@ export function signin() {
   service.signin();
 }
 
-export async function signout() {
+export async function signout(): ReturnType<AuthService['signout']> {
   if (!service) {
     throw new Error('Auth tools not initialized');
   }
