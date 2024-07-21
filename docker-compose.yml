@@ -15,7 +15,6 @@ services:
       dockerfile: client.dockerfile
       args:
         - DEMO_API_CLIENT_ID=$DEMO_API_CLIENT_ID
-        - TRAEFIK_CLIENT_ID=$TRAEFIK_CLIENT_ID
         - MOCK_AUTH_SERVICE=$MOCK_AUTH_SERVICE
     labels:
       - "traefik.enable=true"
