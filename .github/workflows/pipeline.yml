@@ -108,3 +108,25 @@ jobs:
           cache-dependency-path: 'server_lib/pom.xml'
       - run: pip install -r requirements.txt
       - run: scripts/publish_server_lib.py "${{ secrets.GITHUB_TOKEN }}" "${{ secrets.ANSIBLE_VAULT_KEY }}"
+
+  publish-server-test-lib:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: test-e2e
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+          cache: pip
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+          cache-dependency-path: 'server_lib/pom.xml'
+      - run: pip install -r requirements.txt
+      - run: scripts/publish_server_test_lib.py "${{ secrets.GITHUB_TOKEN }}" "${{ secrets.ANSIBLE_VAULT_KEY }}"
