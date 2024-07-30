@@ -21,4 +21,4 @@ spring:
           management-base-url: http://${K8S_POD_IP}:${SPRING_ACTUATOR_PORT}
         auto-deregistration: true
 authtools:
-  cookie-namespace: ${COOKIE_NAMESPACE}
+  cookie-namespace: demo
