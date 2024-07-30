@@ -9,6 +9,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
+import io.github.mucsi96.authtools.WithMockUserAuthorities;
+
 public class UserControllerTests extends BaseIntegrationTest {
 
     @Test
