@@ -60,7 +60,7 @@ services:
       - "traefik.http.routers.agent.rule=Host(`auth.auth-tools.home`)"
       - "traefik.http.routers.agent.tls=true"
   proxy:
-    image: traefik:v3.1.1
+    image: traefik:v3.1.2
     ports:
       - "80:80"
       - "443:443"
