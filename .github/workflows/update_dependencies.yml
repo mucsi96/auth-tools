@@ -27,4 +27,4 @@ jobs:
           node-version: 20
       - env:
           LOG_LEVEL: debug
-        run: npx renovate --token ${{ secrets.GITHUB_TOKEN }} --platform github --autodiscover
+        run: npx renovate --token ${{ secrets.RENOVATE_TOKEN }} --platform github --autodiscover
