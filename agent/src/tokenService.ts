@@ -2,12 +2,14 @@ import { decodeJwt } from 'jose';
 import {
   Client,
   ClientSecretPost,
+  allowInsecureRequests,
   authorizationCodeGrantRequest,
   processAuthorizationCodeResponse,
   validateAuthResponse
 } from 'oauth4webapi';
 import { discover } from './discoveryService.js';
 import { getPendingAuthorization } from './pendingAuthorizations.js';
+import { getEnv } from './utils.js';
 
 export async function getToken({
   client,
@@ -42,7 +44,8 @@ export async function getToken({
     ClientSecretPost(client.client_secret?.toString()!),
     params,
     redirectUri,
-    codeVerifier
+    codeVerifier,
+    { [allowInsecureRequests]: getEnv('ALLOW_INSECURE_REQUESTS') === 'true',}
   );
 
   const tokenResponse = await processAuthorizationCodeResponse(

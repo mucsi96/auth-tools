@@ -1,5 +1,6 @@
 import { createRemoteJWKSet } from 'jose';
 import {
+  allowInsecureRequests,
   AuthorizationServer,
   discoveryRequest,
   processDiscoveryResponse,
@@ -20,7 +21,9 @@ export async function discover() {
   const oidcBaseUrl = new URL(getEnv('ISSUER'));
   authorizationServer = await processDiscoveryResponse(
     oidcBaseUrl,
-    await discoveryRequest(oidcBaseUrl)
+    await discoveryRequest(oidcBaseUrl, {
+      [allowInsecureRequests]: getEnv('ALLOW_INSECURE_REQUESTS') === 'true',
+    })
   );
 
   if (!authorizationServer.jwks_uri) {

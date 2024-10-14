@@ -50,6 +50,7 @@ services:
       - COOKIE_DOMAIN=auth-tools.home
       - CLIENT_ID=$CLIENT_ID
       - CLIENT_SECRET=$CLIENT_SECRET
+      - ALLOW_INSECURE_REQUESTS=true
     build:
       context: ./agent
       dockerfile: Dockerfile
