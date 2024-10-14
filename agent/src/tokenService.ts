@@ -1,12 +1,10 @@
 import { decodeJwt } from 'jose';
 import {
   Client,
-  WWWAuthenticateChallenge,
+  ClientSecretPost,
   authorizationCodeGrantRequest,
-  isOAuth2Error,
-  parseWwwAuthenticateChallenges,
-  processAuthorizationCodeOpenIDResponse,
-  validateAuthResponse,
+  processAuthorizationCodeResponse,
+  validateAuthResponse
 } from 'oauth4webapi';
 import { discover } from './discoveryService.js';
 import { getPendingAuthorization } from './pendingAuthorizations.js';
@@ -38,39 +36,21 @@ export async function getToken({
     state
   );
 
-  if (isOAuth2Error(params)) {
-    console.log('error', params);
-    throw new Error('OAuth 2.0 redirect error');
-  }
-
   const response = await authorizationCodeGrantRequest(
     authorizationServer!,
     client,
+    ClientSecretPost(client.client_secret?.toString()!),
     params,
     redirectUri,
     codeVerifier
   );
 
-  let challenges: WWWAuthenticateChallenge[] | undefined;
-
-  if ((challenges = parseWwwAuthenticateChallenges(response))) {
-    for (const challenge of challenges) {
-      console.log('challenge', challenge);
-    }
-    throw new Error('www-authenticate challenge');
-  }
-
-  const tokenResponse = await processAuthorizationCodeOpenIDResponse(
+  const tokenResponse = await processAuthorizationCodeResponse(
     authorizationServer!,
     client,
     response,
-    nonce
+    { expectedNonce: nonce, requireIdToken: true }
   );
-
-  if (isOAuth2Error(tokenResponse)) {
-    console.log('error', tokenResponse);
-    throw new Error('OAuth 2.0 response body error');
-  }
 
   const { name, email, roles, preferred_username } = await decodeJwt<{
     name: string;

@@ -1,11 +1,11 @@
+import { AssertionError } from 'assert';
 import http, { IncomingMessage, ServerResponse } from 'http';
 import { authorize } from './authorizationController.js';
-import { createCorsHeaders, getEnv, returnError } from './utils.js';
-import { logout } from './logoutController.js';
+import { AuthorizationError } from './authorizationError.js';
 import { handleCallback } from './callbackController.js';
 import { getClientConfig } from './clientConfig.js';
-import { AssertionError } from 'assert';
-import { AuthorizationError } from './authorizationError.js';
+import { logout } from './logoutController.js';
+import { createCorsHeaders, getEnv, returnError } from './utils.js';
 
 const PORT = process.env.PORT || 8080;
 const BASE_PATH = getEnv('BASE_PATH');
@@ -36,7 +36,11 @@ const server = http.createServer(
       }
 
       if (pathname === BASE_PATH + '/callback' && req.method === 'GET') {
-        return await handleCallback(client, req, res);
+        return await handleCallback(
+          client,
+          req,
+          res
+        );
       }
 
       if (pathname === BASE_PATH + '/logout' && req.method === 'POST') {

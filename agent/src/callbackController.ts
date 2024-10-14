@@ -2,9 +2,9 @@ import * as tokenService from './tokenService.js';
 
 import assert from 'assert';
 import { IncomingMessage, ServerResponse } from 'http';
+import { base64url } from 'jose';
 import { Client } from 'oauth4webapi';
 import { createCookieHeader, getEnv } from './utils.js';
-import { base64url } from 'jose';
 
 export async function handleCallback(
   client: Client,
