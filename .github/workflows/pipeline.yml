@@ -74,6 +74,7 @@ jobs:
       - run: scripts/publish_client_lib.py "${{ secrets.GITHUB_TOKEN }}" "${{ secrets.ANSIBLE_VAULT_KEY }}"
 
   publish-agent:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -90,6 +91,7 @@ jobs:
       - run: scripts/publish_agent.py "${{ secrets.GITHUB_TOKEN }}" "${{ secrets.ANSIBLE_VAULT_KEY }}"
 
   publish-server-lib:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -112,6 +114,7 @@ jobs:
       - run: scripts/publish_server_lib.py "${{ secrets.GITHUB_TOKEN }}" "${{ secrets.ANSIBLE_VAULT_KEY }}"
 
   publish-server-test-lib:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
