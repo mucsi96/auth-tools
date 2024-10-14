@@ -1,5 +1,8 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "npm": {
+      "enabled": true
+    },
     "dependencyDashboard": true,
     "groupName": "all dependencies",
     "groupSlug": "all",
