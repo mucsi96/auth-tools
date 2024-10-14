@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:22-alpine
 
 ARG DEMO_API_CLIENT_ID
 ARG MOCK_AUTH_SERVICE

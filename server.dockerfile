@@ -1,4 +1,4 @@
-FROM maven:3-eclipse-temurin-22 as build
+FROM maven:3-eclipse-temurin-22 AS build
 WORKDIR /workspace/server_lib
 
 COPY server_lib/pom.xml .
@@ -15,7 +15,7 @@ RUN mvn package -DskipTests -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 
-FROM bellsoft/liberica-openjre-alpine-musl:22
+FROM bellsoft/liberica-openjre-alpine-musl:23
 
 RUN apk --no-cache add bash curl
 
