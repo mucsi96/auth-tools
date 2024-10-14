@@ -14,13 +14,13 @@
   "author": "Igor Bari <mucsi96@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.12.7",
+    "@types/node": "^22.0.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.8",
-    "vite-plugin-dts": "^3.8.1"
+    "vite-plugin-dts": "^4.0.0"
   },
   "dependencies": {
-    "@mucsi96/ui-elements": "^46.0.0",
+    "@mucsi96/ui-elements": "^68.0.0",
     "jwt-decode": "^4.0.0"
   }
 }
